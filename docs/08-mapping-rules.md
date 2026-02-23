@@ -16,20 +16,44 @@ touchpoints:
     criticality: <1-5>
 ```
 
-## Mapping algorithm (MVP)
-1. Lowercase the release item `title` + `description`
-2. For each touchpoint:
-   - If any `keywords[]` appear, add that touchpoint
-3. If none match, set `touchpoints=[]` and route the item to Needs Review
+# MVP Ingestion Sources (Pick One)
 
-## Impact scoring inputs (MVP)
-- `criticality` (from touchpoint)
-- `exposure` (0/1): does the tenant have configs in that category?
-- `breadth` (0-3): how widely used (optional in MVP)
+## Option A (Fast): Manual Entry Queue
 
-## Output labels (MVP)
-- `HIGH`: criticality 5 and exposure=1
-- `MED`: criticality 3-4 and exposure=1
-- `LOW`: exposure=1 and score is low
-- `IGNORE`: exposure=0
-- `REVIEW`: no touchpoints matched
+Maintain a simple list of release items in a:
+
+- JSON file  
+  **or**
+- SharePoint list  
+
+Each item must include:
+
+- `title`
+- `type`
+- `description`
+- `module`
+- `url`
+
+The Power Automate flow:
+
+1. Reads the list.
+2. Normalizes each record.
+3. Outputs the standardized release artifact.
+
+---
+
+## Option B (Preferred): Pull from Maintained RSS / HTML Page
+
+1. Use **HTTP GET** to fetch release content page(s).
+2. Split content into structured sections.
+3. For each section:
+   - Create a release item record.
+4. Output the normalized release artifact.
+
+---
+
+# Required Normalization Rules
+
+- `id`  
+  Must be stable within a release.  
+  Format:      
