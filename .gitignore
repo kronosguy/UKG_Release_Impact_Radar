@@ -1,0 +1,17 @@
+# Power Automate exports / local flow packages
+*.zip
+*.msapp
+*.paflow
+*.pak
+*.json.secret
+*.env
+secrets/
+.local/
+tmp/
+out/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
