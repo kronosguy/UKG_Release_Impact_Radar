@@ -15,3 +15,6 @@ out/
 Thumbs.db
 .vscode/
 .idea/
+# Tenant config exports (do not commit)
+snapshots/
+
