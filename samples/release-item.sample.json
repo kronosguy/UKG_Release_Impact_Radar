@@ -1,0 +1,11 @@
+{
+  "releaseId": "2026.XX",
+  "publishDate": "2026-02-23",
+  "module": "Timekeeping",
+  "title": "Example release item",
+  "type": "Enhancement",
+  "description": "Example description of a change.",
+  "tags": ["timekeeping"],
+  "touchpoints": [],
+  "requiresAction": false
+}

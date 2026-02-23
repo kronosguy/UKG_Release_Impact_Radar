@@ -1,0 +1,14 @@
+{
+  "tenantId": "AHS-PROD",
+  "capturedAtUtc": "2026-02-23T00:00:00Z",
+  "category": "timekeeping_exceptions",
+  "objects": [
+    {
+      "objectType": "exceptionRule",
+      "objectId": "12345",
+      "name": "Missed Punch",
+      "orgScope": "AHS/OK",
+      "payloadHash": "sha256:example"
+    }
+  ]
+}

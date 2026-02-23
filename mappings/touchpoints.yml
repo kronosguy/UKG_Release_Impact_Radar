@@ -1,0 +1,26 @@
+version: 1
+touchpoints:
+  - id: access_method_profiles
+    keywords: ["access method", "mobile access", "profile", "device restriction", "network restriction"]
+    categoryHints: ["security", "time collection"]
+    criticality: 5
+
+  - id: timekeeping_exceptions
+    keywords: ["exception", "missed punch", "rounding", "grace", "auto-apply", "punch interpretation"]
+    categoryHints: ["timekeeping"]
+    criticality: 5
+
+  - id: scheduling_zones
+    keywords: ["zone", "shift zone", "zone assignment", "shift bucket", "schedule zone"]
+    categoryHints: ["scheduling"]
+    criticality: 4
+
+  - id: attestation
+    keywords: ["attestation", "acknowledgement", "prompt", "employee confirmation"]
+    categoryHints: ["timekeeping", "compliance"]
+    criticality: 4
+
+  - id: integrations_api
+    keywords: ["api", "endpoint", "payload", "field", "deprecation", "rate limit", "authentication"]
+    categoryHints: ["integrations"]
+    criticality: 5
