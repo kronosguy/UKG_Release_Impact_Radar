@@ -23,7 +23,6 @@ jobs:
           cat << 'EOF' > fetch_transcripts.py
           import yt_dlp
           from youtube_transcript_api import YouTubeTranscriptApi
-          from youtube_transcript_api.formatters import TextFormatter
           import re
           import os
 
@@ -34,6 +33,8 @@ jobs:
               os.makedirs(OUTPUT_DIR)
 
           ydl_opts = {'extract_flat': 'in_playlist', 'quiet': True}
+
+          ytt_api = YouTubeTranscriptApi()
 
           with yt_dlp.YoutubeDL(ydl_opts) as ydl:
               info = ydl.extract_info(PLAYLIST_URL, download=False)
@@ -46,20 +47,20 @@ jobs:
                   video_id = entry['id']
                   title = entry.get('title', f'Unknown_Video_{video_id}')
                   
-                  # Sanitize filename
+                  # Sanitize filename for Markdown output
                   safe_title = re.sub(r'[\\/*?:"<>|]', "", title).strip()
                   
                   try:
-                      # Directly use the imported API class
-                      transcript = YouTubeTranscriptApi.get_transcript(video_id)
+                      # Fetch transcript using YouTubeTranscriptApi v1.x instance call
+                      transcript_obj = ytt_api.fetch(video_id)
                       
-                      formatter = TextFormatter()
-                      formatted_transcript = formatter.format_transcript(transcript)
+                      # Build formatted transcript text
+                      transcript_text = "\n".join([f"{item.start:.2f}s: {item.text}" for item in transcript_obj.snippets])
                       
                       file_path = os.path.join(OUTPUT_DIR, f'{safe_title}.md')
                       with open(file_path, 'w', encoding='utf-8') as f:
                           f.write(f'# {title}\n\n')
-                          f.write(formatted_transcript)
+                          f.write(transcript_text)
                       print(f'Success: {title}')
                   except Exception as e:
                       print(f'Failed for video {title} ({video_id}): {e}')
