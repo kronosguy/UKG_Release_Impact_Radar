@@ -50,7 +50,9 @@ jobs:
                   safe_title = re.sub(r'[\\/*?:"<>|]', "", title).strip()
                   
                   try:
+                      # Directly use the imported API class
                       transcript = YouTubeTranscriptApi.get_transcript(video_id)
+                      
                       formatter = TextFormatter()
                       formatted_transcript = formatter.format_transcript(transcript)
                       
