@@ -19,7 +19,7 @@ on:
         type: number
         default: 0
       fail_on_partial:
-        description: Fail when any individual video cannot be transcribed
+        description: Fail when any video cannot be transcribed
         required: true
         type: boolean
         default: false
@@ -41,11 +41,15 @@ jobs:
       LANGUAGE_CODES: ${{ inputs.languages }}
       MAX_VIDEOS: ${{ inputs.max_videos }}
       FAIL_ON_PARTIAL: ${{ inputs.fail_on_partial }}
+      RUNNER_ENVIRONMENT: ${{ runner.environment }}
       WEBSHARE_PROXY_USERNAME: ${{ secrets.WEBSHARE_PROXY_USERNAME }}
       WEBSHARE_PROXY_PASSWORD: ${{ secrets.WEBSHARE_PROXY_PASSWORD }}
       WEBSHARE_PROXY_LOCATIONS: ${{ vars.WEBSHARE_PROXY_LOCATIONS || 'us' }}
       TRANSCRIPT_PROXY_URL: ${{ secrets.TRANSCRIPT_PROXY_URL }}
       YT_DLP_PROXY: ${{ secrets.YT_DLP_PROXY }}
+      YOUTUBE_COOKIES_B64: ${{ secrets.YOUTUBE_COOKIES_B64 }}
+      YOUTUBE_COOKIES_GZIP_B64: ${{ secrets.YOUTUBE_COOKIES_GZIP_B64 }}
+      YOUTUBE_USER_AGENT: ${{ secrets.YOUTUBE_USER_AGENT }}
 
     steps:
       - name: Checkout repository
@@ -57,319 +61,120 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+          cache: pip
+          cache-dependency-path: .github/workflows/generate-transcripts.yml
 
       - name: Install transcript dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install \
-            "yt-dlp==2026.7.4" \
+            "yt-dlp[default,curl-cffi]==2026.7.4" \
             "youtube-transcript-api==1.2.4"
 
-      - name: Validate network strategy
-        shell: bash
-        run: |
-          if [[ -n "${WEBSHARE_PROXY_USERNAME}" && -n "${WEBSHARE_PROXY_PASSWORD}" ]]; then
-            echo "Using Webshare rotating residential proxies."
-          elif [[ -n "${TRANSCRIPT_PROXY_URL}" ]]; then
-            echo "Using the configured generic proxy."
-          elif [[ "${{ runner.environment }}" == "self-hosted" ]]; then
-            echo "Using a self-hosted runner network path."
-          else
-            echo "::warning::No proxy is configured. YouTube commonly blocks GitHub-hosted cloud IPs; the yt-dlp fallback will be attempted."
-          fi
-
-      - name: Fetch transcripts and generate Markdown files
+      - name: Prepare optional YouTube cookies
         shell: bash
         run: |
           set -euo pipefail
-          cat > fetch_transcripts.py <<'PY'
-          from __future__ import annotations
-
-          import html
-          import json
+          python - <<'PY'
+          import base64
+          import gzip
           import os
-          import random
-          import re
-          import shutil
-          import sys
-          import tempfile
-          import time
-          from datetime import datetime, timezone
           from pathlib import Path
 
-          import yt_dlp
-          from youtube_transcript_api import YouTubeTranscriptApi
-          from youtube_transcript_api.proxies import GenericProxyConfig, WebshareProxyConfig
+          plain = os.getenv("YOUTUBE_COOKIES_B64", "").strip()
+          compressed = os.getenv("YOUTUBE_COOKIES_GZIP_B64", "").strip()
 
-          PLAYLIST_URL = os.environ["PLAYLIST_URL"]
-          OUTPUT_DIR = Path("transcripts")
-          LANGUAGES = [x.strip() for x in os.getenv("LANGUAGE_CODES", "en").split(",") if x.strip()]
-          MAX_VIDEOS = int(os.getenv("MAX_VIDEOS", "0"))
-          FAIL_ON_PARTIAL = os.getenv("FAIL_ON_PARTIAL", "false").lower() == "true"
-          RETRIES = 3
+          if plain and compressed:
+              raise SystemExit(
+                  "Configure only one of YOUTUBE_COOKIES_B64 or "
+                  "YOUTUBE_COOKIES_GZIP_B64."
+              )
 
-          def clean_text(value: str) -> str:
-              value = html.unescape(value)
-              value = re.sub(r"<[^>]+>", "", value)
-              return re.sub(r"\s+", " ", value).strip()
+          if not plain and not compressed:
+              print("No cookie secret configured.")
+              raise SystemExit(0)
 
-          def clean_error(error: BaseException, limit: int = 700) -> str:
-              value = str(error).strip().replace("\r", "")
-              return value if len(value) <= limit else value[: limit - 3] + "..."
+          try:
+              encoded = compressed or plain
+              raw = base64.b64decode(encoded, validate=True)
+              if compressed:
+                  raw = gzip.decompress(raw)
+              text = raw.decode("utf-8-sig")
+          except Exception as error:
+              raise SystemExit(
+                  f"Unable to decode the YouTube cookie secret: {error}"
+              ) from error
 
-          def safe_filename(title: str, video_id: str, index: int) -> str:
-              title = re.sub(r'[\\/*?:"<>|\x00-\x1f]', "", html.unescape(title))
-              title = re.sub(r"\s+", " ", title).strip(" .")[:140] or f"video-{video_id}"
-              return f"{index:03d}_{title}__{video_id}.md"
+          text = text.replace("\r\n", "\n").replace("\r", "\n")
+          first_line = text.splitlines()[0] if text.splitlines() else ""
+          valid_headers = {
+              "# HTTP Cookie File",
+              "# Netscape HTTP Cookie File",
+          }
+          if first_line not in valid_headers:
+              raise SystemExit(
+                  "The decoded cookie file is not Netscape formatted. "
+                  "Its first line must be '# Netscape HTTP Cookie File' "
+                  "or '# HTTP Cookie File'."
+              )
 
-          def timestamp(seconds: float) -> str:
-              milliseconds = max(0, round(seconds * 1000))
-              hours, milliseconds = divmod(milliseconds, 3_600_000)
-              minutes, milliseconds = divmod(milliseconds, 60_000)
-              seconds, milliseconds = divmod(milliseconds, 1000)
-              if hours:
-                  return f"{hours:02d}:{minutes:02d}:{seconds:02d}.{milliseconds:03d}"
-              return f"{minutes:02d}:{seconds:02d}.{milliseconds:03d}"
+          cookie_path = Path(os.environ["RUNNER_TEMP"]) / "youtube-cookies.txt"
+          cookie_path.write_text(text.rstrip() + "\n", encoding="utf-8")
+          cookie_path.chmod(0o600)
 
-          def proxy_settings():
-              username = os.getenv("WEBSHARE_PROXY_USERNAME", "").strip()
-              password = os.getenv("WEBSHARE_PROXY_PASSWORD", "").strip()
-              generic = os.getenv("TRANSCRIPT_PROXY_URL", "").strip()
-              if bool(username) != bool(password):
-                  raise RuntimeError("Both Webshare proxy secrets must be configured together.")
-              if username:
-                  locations = [x.strip().lower() for x in os.getenv("WEBSHARE_PROXY_LOCATIONS", "us").split(",") if x.strip()]
-                  return WebshareProxyConfig(
-                      proxy_username=username,
-                      proxy_password=password,
-                      filter_ip_locations=locations or None,
-                  ), "webshare"
-              if generic:
-                  return GenericProxyConfig(http_url=generic, https_url=generic), "generic"
-              return None, "none"
+          with open(
+              os.environ["GITHUB_ENV"],
+              "a",
+              encoding="utf-8",
+          ) as environment:
+              environment.write(
+                  f"YOUTUBE_COOKIES_FILE={cookie_path}\n"
+              )
 
-          def ydl_options(*, playlist: bool = False):
-              options = {
-                  "quiet": True,
-                  "no_warnings": True,
-                  "ignoreerrors": True,
-                  "retries": 5,
-                  "extractor_retries": 5,
-                  "socket_timeout": 30,
-                  "noplaylist": not playlist,
-              }
-              proxy = os.getenv("YT_DLP_PROXY", "").strip() or os.getenv("TRANSCRIPT_PROXY_URL", "").strip()
-              if proxy:
-                  options["proxy"] = proxy
-              return options
-
-          def playlist_entries():
-              options = ydl_options(playlist=True)
-              options.update({"extract_flat": "in_playlist", "skip_download": True})
-              if MAX_VIDEOS > 0:
-                  options["playlistend"] = MAX_VIDEOS
-              with yt_dlp.YoutubeDL(options) as ydl:
-                  info = ydl.extract_info(PLAYLIST_URL, download=False)
-              entries = [] if not info else [entry for entry in info.get("entries", []) if entry and entry.get("id")]
-              if not entries:
-                  raise RuntimeError("No usable playlist entries were retrieved.")
-              return entries
-
-          def api_transcript(api, video_id: str):
-              last_error = None
-              for attempt in range(1, RETRIES + 1):
-                  try:
-                      transcript = api.fetch(video_id, languages=LANGUAGES)
-                      segments = [
-                          (float(item.start), clean_text(item.text))
-                          for item in transcript.snippets
-                          if clean_text(item.text)
-                      ]
-                      if not segments:
-                          raise RuntimeError("The transcript API returned no text.")
-                      return segments, str(getattr(transcript, "language_code", LANGUAGES[0])), "youtube-transcript-api"
-                  except Exception as error:
-                      last_error = error
-                      if error.__class__.__name__ in {
-                          "AgeRestricted", "InvalidVideoId", "NoTranscriptFound",
-                          "PoTokenRequired", "TranscriptsDisabled", "VideoUnavailable", "VideoUnplayable",
-                      }:
-                          break
-                      if attempt < RETRIES:
-                          delay = min(8.0, 2 ** (attempt - 1) + random.random())
-                          print(f"  API attempt {attempt} failed; retrying in {delay:.1f}s")
-                          time.sleep(delay)
-              raise last_error
-
-          def language_match(candidate: str, preferred: str) -> bool:
-              candidate, preferred = candidate.lower(), preferred.lower()
-              return candidate == preferred or candidate.startswith(preferred + "-") or preferred.startswith(candidate + "-")
-
-          def select_track(info):
-              sources = (("manual", info.get("subtitles") or {}), ("automatic", info.get("automatic_captions") or {}))
-              for preferred in LANGUAGES:
-                  for source, tracks in sources:
-                      for language in tracks:
-                          if language != "live_chat" and language_match(language, preferred):
-                              return source, language
-              for source, tracks in sources:
-                  candidates = [language for language in tracks if language != "live_chat"]
-                  if candidates:
-                      original = [language for language in candidates if language.endswith("-orig")]
-                      return source, original[0] if original else sorted(candidates)[0]
-              return None
-
-          def ytdlp_transcript(video_id: str):
-              video_url = f"https://www.youtube.com/watch?v={video_id}"
-              with yt_dlp.YoutubeDL({**ydl_options(), "skip_download": True}) as ydl:
-                  info = ydl.extract_info(video_url, download=False)
-              if not info:
-                  raise RuntimeError("yt-dlp could not inspect the video.")
-              selected = select_track(info)
-              if not selected:
-                  raise RuntimeError("No subtitle or automatic-caption track exists.")
-              source, language = selected
-              with tempfile.TemporaryDirectory(prefix=f"captions-{video_id}-") as temp_dir:
-                  options = ydl_options()
-                  options.update({
-                      "skip_download": True,
-                      "writesubtitles": source == "manual",
-                      "writeautomaticsub": source == "automatic",
-                      "subtitleslangs": [language],
-                      "subtitlesformat": "json3",
-                      "outtmpl": str(Path(temp_dir) / "%(id)s.%(ext)s"),
-                      "overwrites": True,
-                  })
-                  with yt_dlp.YoutubeDL(options) as ydl:
-                      ydl.extract_info(video_url, download=True)
-                  files = sorted(Path(temp_dir).glob(f"{video_id}.*.json3"))
-                  if not files:
-                      raise RuntimeError("yt-dlp found captions but did not download JSON3 output.")
-                  data = json.loads(files[0].read_text(encoding="utf-8"))
-              segments = []
-              for event in data.get("events", []):
-                  text = clean_text("".join(segment.get("utf8", "") for segment in event.get("segs", [])))
-                  if text:
-                      segments.append((float(event.get("tStartMs", 0)) / 1000.0, text))
-              if not segments:
-                  raise RuntimeError("yt-dlp downloaded an empty caption track.")
-              return segments, language, f"yt-dlp-{source}"
-
-          def write_transcript(path: Path, title: str, video_id: str, language: str, source: str, segments):
-              lines = [
-                  f"# {title}", "",
-                  f"- **Video:** https://www.youtube.com/watch?v={video_id}",
-                  f"- **Video ID:** `{video_id}`",
-                  f"- **Language:** `{language}`",
-                  f"- **Retrieval source:** `{source}`", "", "## Transcript", "",
-              ]
-              lines.extend(f"**{timestamp(start)}** {text}" for start, text in segments)
-              path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
-
-          def write_reports(results, proxy_mode: str):
-              success = sum(item["status"] == "success" for item in results)
-              manifest = {
-                  "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-                  "playlist_url": PLAYLIST_URL,
-                  "requested_languages": LANGUAGES,
-                  "proxy_mode": proxy_mode,
-                  "total_videos": len(results),
-                  "successful_videos": success,
-                  "failed_videos": len(results) - success,
-                  "results": results,
-              }
-              (OUTPUT_DIR / "_manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-              summary = [
-                  "# Playlist Transcript Run", "",
-                  f"- Total videos: **{len(results)}**",
-                  f"- Successful: **{success}**",
-                  f"- Failed: **{len(results) - success}**",
-                  f"- Proxy mode: **{proxy_mode}**", "",
-                  "| # | Status | Video | Source | Language |",
-                  "|---:|---|---|---|---|",
-              ]
-              for item in results:
-                  title = item["title"].replace("|", "\\|")
-                  summary.append(f"| {item['index']} | {item['status']} | {title} (`{item['video_id']}`) | {item.get('source', '')} | {item.get('language', '')} |")
-              summary_text = "\n".join(summary).rstrip() + "\n"
-              (OUTPUT_DIR / "_summary.md").write_text(summary_text, encoding="utf-8")
-              failures = [item for item in results if item["status"] != "success"]
-              failure_lines = ["# Transcript Failures", ""]
-              for item in failures:
-                  failure_lines.extend([
-                      f"## {item['index']}. {item['title']}", "",
-                      f"- Video: {item['url']}", "", "```text",
-                      item.get("error", "Unknown error").replace("```", "[fence]"),
-                      "```", "",
-                  ])
-              if not failures:
-                  failure_lines.append("No failures.")
-              (OUTPUT_DIR / "_failures.md").write_text("\n".join(failure_lines).rstrip() + "\n", encoding="utf-8")
-              if os.getenv("GITHUB_STEP_SUMMARY"):
-                  with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as handle:
-                      handle.write(summary_text)
-              return success, len(results) - success
-
-          def main() -> int:
-              if OUTPUT_DIR.exists():
-                  shutil.rmtree(OUTPUT_DIR)
-              OUTPUT_DIR.mkdir(parents=True)
-              results = []
-              proxy_mode = "configuration-error"
-              try:
-                  proxy_config, proxy_mode = proxy_settings()
-                  print(f"Proxy mode: {proxy_mode}")
-                  entries = playlist_entries()
-                  print(f"Playlist videos discovered: {len(entries)}")
-                  api = YouTubeTranscriptApi(proxy_config=proxy_config)
-                  for index, entry in enumerate(entries, start=1):
-                      video_id = str(entry["id"])
-                      title = str(entry.get("title") or f"Unknown Video {video_id}")
-                      url = f"https://www.youtube.com/watch?v={video_id}"
-                      print(f"[{index}/{len(entries)}] {title}")
-                      try:
-                          try:
-                              segments, language, source = api_transcript(api, video_id)
-                          except Exception as primary_error:
-                              print(f"  Primary failed ({primary_error.__class__.__name__}); trying yt-dlp fallback")
-                              try:
-                                  segments, language, source = ytdlp_transcript(video_id)
-                              except Exception as fallback_error:
-                                  raise RuntimeError(
-                                      f"Primary: {primary_error.__class__.__name__}: {clean_error(primary_error)}\n\n"
-                                      f"Fallback: {fallback_error.__class__.__name__}: {clean_error(fallback_error)}"
-                                  ) from fallback_error
-                          filename = safe_filename(title, video_id, index)
-                          write_transcript(OUTPUT_DIR / filename, title, video_id, language, source, segments)
-                          results.append({
-                              "index": index, "video_id": video_id, "title": title, "url": url,
-                              "status": "success", "source": source, "language": language,
-                              "output_file": filename, "segment_count": len(segments),
-                          })
-                          print(f"  Success: {source}, {language}, {len(segments)} segments")
-                      except Exception as error:
-                          results.append({
-                              "index": index, "video_id": video_id, "title": title, "url": url,
-                              "status": "failed", "error": clean_error(error, 1400),
-                          })
-                          print(f"  Failed: {error}")
-                      if index < len(entries):
-                          time.sleep(1.5)
-              except Exception as error:
-                  results.append({
-                      "index": 0, "video_id": "playlist", "title": "Playlist retrieval",
-                      "url": PLAYLIST_URL, "status": "failed", "error": clean_error(error, 1400),
-                  })
-              success, failed = write_reports(results, proxy_mode)
-              print(f"Completed: {success} succeeded, {failed} failed")
-              if success == 0:
-                  print("No transcripts were generated. Configure a rotating residential proxy or use a trusted self-hosted runner.", file=sys.stderr)
-                  return 1
-              return 1 if FAIL_ON_PARTIAL and failed else 0
-
-          raise SystemExit(main())
+          print("Decoded encrypted YouTube cookie secret.")
           PY
-          python fetch_transcripts.py
+
+      - name: Validate YouTube access strategy
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          strategies=()
+
+          if [[ -n "${WEBSHARE_PROXY_USERNAME}" && -n "${WEBSHARE_PROXY_PASSWORD}" ]]; then
+            strategies+=("Webshare rotating residential proxy")
+          elif [[ -n "${TRANSCRIPT_PROXY_URL}" || -n "${YT_DLP_PROXY}" ]]; then
+            strategies+=("configured proxy")
+          fi
+
+          if [[ -n "${YOUTUBE_COOKIES_FILE:-}" ]]; then
+            strategies+=("encrypted cookie file")
+          fi
+
+          if [[ "${{ runner.environment }}" == "self-hosted" ]]; then
+            strategies+=("self-hosted runner")
+          fi
+
+          if (( ${#strategies[@]} == 0 )); then
+            echo "::warning::No proxy, cookie file, or self-hosted runner is configured. The workflow will probe one video and fail fast if YouTube blocks the GitHub-hosted IP."
+          else
+            printf 'YouTube access strategies: %s\n' "$(IFS=', '; echo "${strategies[*]}")"
+          fi
+
+          node --version
+          python -m yt_dlp --version
+
+      - name: Fetch transcripts and generate Markdown files
+        shell: bash
+        run: python scripts/fetch_transcripts.py
+
+      - name: Remove temporary cookie file
+        if: always()
+        shell: bash
+        run: |
+          if [[ -n "${YOUTUBE_COOKIES_FILE:-}" ]]; then
+            rm -f "${YOUTUBE_COOKIES_FILE}"
+          fi
 
       - name: Upload transcripts and diagnostics
         if: always()
