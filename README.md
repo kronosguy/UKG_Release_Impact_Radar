@@ -1,4 +1,4 @@
-# UKG Release Impact Radar — Full Data Generator
+# UKG Workforce Assurance Data Generator
 
 This repository is the complete deterministic data-generation platform for the five locked Workforce Decision Assurance tenant overlays:
 
@@ -17,11 +17,35 @@ The generator produces two intentionally separate artifact families:
 
 Generated operational data is never inserted into SDM configuration envelopes.
 
+## Generate the first dataset
+
+Use **Actions → Generate Five-Tenant Workforce Assurance History → Run workflow** with:
+
+```text
+profile: smoke
+start_year: 2016
+end_year: 2026
+formats: jsonl
+root_seed: 20260721
+load_supabase: false
+```
+
+The workflow validates the control plane, generates all five isolated tenant datasets, packages one ZIP per tenant, and publishes a combined five-tenant artifact. Use `demo` after the smoke run passes. Use `portfolio` only for larger showcase datasets.
+
+Generated datasets remain workflow artifacts rather than permanent source-controlled files. This keeps Git history small while preserving deterministic regeneration through the root seed and run manifest.
+
 ## Run locally
 
 ```bash
 python -m pip install --requirement requirements.txt
-python -m generator.cli generate   --tenant delta   --start-year 2016   --end-year 2026   --profile smoke   --formats jsonl,csv   --output-dir out
+python -m pip install --editable . --no-deps
+python -m generator.cli generate \
+  --tenant delta \
+  --start-year 2016 \
+  --end-year 2026 \
+  --profile smoke \
+  --formats jsonl,csv \
+  --output-dir out
 ```
 
 Generate all tenants:
