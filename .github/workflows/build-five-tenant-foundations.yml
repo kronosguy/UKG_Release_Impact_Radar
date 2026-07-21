@@ -1,0 +1,345 @@
+name: Build All Five UKG Tenant Foundations
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_attestation:
+        description: Generate GitHub build provenance when repository support is available
+        required: false
+        type: boolean
+        default: false
+  pull_request:
+    paths:
+      - '.github/workflows/build-five-tenant-foundations.yml'
+      - 'config/**'
+      - 'schemas/**'
+      - 'tenants/**'
+      - 'templates/**'
+      - 'scripts/**'
+      - 'database/**'
+      - 'requirements.txt'
+  push:
+    branches:
+      - main
+    tags:
+      - 'foundation-v*'
+    paths:
+      - '.github/workflows/build-five-tenant-foundations.yml'
+      - 'config/**'
+      - 'schemas/**'
+      - 'tenants/**'
+      - 'templates/**'
+      - 'scripts/**'
+      - 'database/**'
+      - 'requirements.txt'
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+
+concurrency:
+  group: ukg-foundation-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PYTHON_VERSION: '3.12'
+  RETENTION_DAYS: '30'
+  EXPECTED_SDM_OBJECTS: '337'
+
+jobs:
+  validate-repository:
+    name: Validate shared foundation contracts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install build dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          pip install --requirement requirements.txt
+          pip install 'sqlfluff>=3,<4'
+
+      - name: Validate all YAML source contracts
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+          from jsonschema import Draft202012Validator, FormatChecker
+
+          checks = [
+              (Path('config/export-object-catalog.yaml'), Path('schemas/export-object-catalog.schema.yaml')),
+              (Path('tenants/pepsico/tenant-foundation.yaml'), Path('schemas/tenant-foundation.schema.yaml')),
+              (Path('tenants/ascension/tenant-foundation.yaml'), Path('schemas/tenant-foundation.schema.yaml')),
+              (Path('tenants/delta/tenant-foundation.yaml'), Path('schemas/tenant-foundation.schema.yaml')),
+              (Path('tenants/mgm/tenant-foundation.yaml'), Path('schemas/tenant-foundation.schema.yaml')),
+              (Path('tenants/schneider/tenant-foundation.yaml'), Path('schemas/tenant-foundation.schema.yaml')),
+          ]
+
+          for instance_path, schema_path in checks:
+              with instance_path.open(encoding='utf-8') as handle:
+                  instance = yaml.safe_load(handle)
+              with schema_path.open(encoding='utf-8') as handle:
+                  schema = yaml.safe_load(handle)
+
+              errors = sorted(
+                  Draft202012Validator(
+                      schema,
+                      format_checker=FormatChecker(),
+                  ).iter_errors(instance),
+                  key=lambda error: list(error.path),
+              )
+
+              if errors:
+                  messages = [
+                      f'{instance_path} {list(error.path)}: {error.message}'
+                      for error in errors
+                  ]
+                  raise SystemExit('\n'.join(messages))
+
+              print(f'PASS: {instance_path}')
+          PY
+
+      - name: Verify the SDM object catalog contains exactly 337 objects
+        run: |
+          set -euo pipefail
+          ACTUAL="$(python - <<'PY'
+          import yaml
+          with open('config/export-object-catalog.yaml', encoding='utf-8') as handle:
+              print(len(yaml.safe_load(handle)['spec']['objects']))
+          PY
+          )"
+          test "$ACTUAL" -eq "$EXPECTED_SDM_OBJECTS"
+          echo "PASS: $ACTUAL SDM objects"
+
+      - name: Validate PostgreSQL and Supabase schema migrations
+        run: |
+          set -euo pipefail
+          for migration in database/migrations/*.sql; do
+            sqlfluff parse --dialect postgres "$migration" >/dev/null
+            echo "PASS: $migration"
+          done
+
+          grep -R --line-number --ignore-case --fixed-strings \
+            'partition by list (tenant_id)' \
+            database/migrations/0003_partitioned_facts.sql
+
+          grep -R --line-number --ignore-case --fixed-strings \
+            'partition by range (business_date)' \
+            database/migrations/0003_partitioned_facts.sql
+
+          grep -R --line-number --ignore-case --fixed-strings \
+            'enable row level security' \
+            database/migrations/0004_rls_and_access.sql
+
+  build-tenants:
+    name: Build ${{ matrix.display_name }} foundation
+    needs: validate-repository
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - slug: pepsico
+            display_name: PepsiCo
+            manifest: tenants/pepsico/tenant-foundation.yaml
+            primary_project: P05
+          - slug: ascension
+            display_name: Ascension Healthcare
+            manifest: tenants/ascension/tenant-foundation.yaml
+            primary_project: P02
+          - slug: delta
+            display_name: Delta Air Lines
+            manifest: tenants/delta/tenant-foundation.yaml
+            primary_project: P03
+          - slug: mgm
+            display_name: MGM Resorts Las Vegas
+            manifest: tenants/mgm/tenant-foundation.yaml
+            primary_project: P01
+          - slug: schneider
+            display_name: Schneider Electric
+            manifest: tenants/schneider/tenant-foundation.yaml
+            primary_project: P04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install deterministic build dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          pip install --requirement requirements.txt
+
+      - name: Render the foundation package from YAML
+        run: |
+          set -euo pipefail
+          python scripts/render_foundation.py \
+            --tenant-manifest "${{ matrix.manifest }}" \
+            --catalog config/export-object-catalog.yaml \
+            --project-profiles config/project-object-profiles.yaml \
+            --repo-root . \
+            --output "dist/${{ matrix.slug }}"
+
+      - name: Validate foundation-only output
+        run: |
+          set -euo pipefail
+          python scripts/validate_foundation.py \
+            --package "dist/${{ matrix.slug }}" \
+            --catalog config/export-object-catalog.yaml \
+            --schemas schemas
+
+      - name: Verify exact export structure and empty response collections
+        run: |
+          set -euo pipefail
+          PACKAGE="dist/${{ matrix.slug }}"
+          EXPORT_ROOT="$PACKAGE/sdm-export"
+
+          test -f "$EXPORT_ROOT/ExportConfig.json"
+          test -f "$PACKAGE/BUILD-MANIFEST.json"
+          test -f "$PACKAGE/SHA256SUMS"
+
+          ACTUAL="$(find "$EXPORT_ROOT" -mindepth 2 -maxdepth 2 -name response.json | wc -l)"
+          test "$ACTUAL" -eq "$EXPECTED_SDM_OBJECTS"
+
+          python - "$EXPORT_ROOT" <<'PY'
+          from pathlib import Path
+          import json
+          import sys
+
+          export_root = Path(sys.argv[1])
+          response_files = sorted(export_root.glob('*/response.json'))
+
+          if len(response_files) != 337:
+              raise SystemExit(f'Expected 337 response files; found {len(response_files)}')
+
+          for response_file in response_files:
+              payload = json.loads(response_file.read_text(encoding='utf-8'))
+              if payload.get('itemsRetrieveResponseDTOs') != []:
+                  raise SystemExit(f'Non-empty itemsRetrieveResponseDTOs: {response_file}')
+              if payload.get('itemsRetrieveResponses') != []:
+                  raise SystemExit(f'Non-empty itemsRetrieveResponses: {response_file}')
+
+          print(f'PASS: {len(response_files)} empty SDM response envelopes')
+          PY
+
+      - name: Reject workforce, biometric, payroll-result, and synthetic-history data
+        run: |
+          set -euo pipefail
+          PACKAGE="dist/${{ matrix.slug }}"
+
+          if find "$PACKAGE" -type f | grep -Ei \
+            '/(employees?|persons?|workers?|punches?|timecards?|schedules?|payroll-results?|biometric-templates?|synthetic-history|generated-data)(/|\.|$)'; then
+            echo 'Forbidden operational or synthetic data was generated.' >&2
+            exit 1
+          fi
+
+      - name: Write build metadata
+        run: |
+          set -euo pipefail
+          cat > "dist/${{ matrix.slug }}/GITHUB-BUILD-METADATA.json" <<JSON
+          {
+            "tenant": "${{ matrix.display_name }}",
+            "tenant_slug": "${{ matrix.slug }}",
+            "primary_project": "${{ matrix.primary_project }}",
+            "foundation_only": true,
+            "repository": "${{ github.repository }}",
+            "commit_sha": "${{ github.sha }}",
+            "workflow_run_id": "${{ github.run_id }}",
+            "workflow_run_attempt": "${{ github.run_attempt }}"
+          }
+          JSON
+
+      - name: Package and checksum tenant foundation
+        id: package
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets
+
+          ZIP="release-assets/${{ matrix.slug }}-assurance-foundation-${GITHUB_SHA::12}.zip"
+          (
+            cd dist
+            zip -q -r "../$ZIP" "${{ matrix.slug }}"
+          )
+
+          sha256sum "$ZIP" > "${ZIP}.sha256"
+
+          echo "zip=$ZIP" >> "$GITHUB_OUTPUT"
+          echo "checksum=${ZIP}.sha256" >> "$GITHUB_OUTPUT"
+
+      - name: Upload tenant foundation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.slug }}-assurance-foundation
+          path: |
+            ${{ steps.package.outputs.zip }}
+            ${{ steps.package.outputs.checksum }}
+          if-no-files-found: error
+          retention-days: ${{ env.RETENTION_DAYS }}
+          compression-level: 0
+
+      - name: Attest build provenance
+        if: github.event_name == 'workflow_dispatch' && inputs.enable_attestation == true
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: ${{ steps.package.outputs.zip }}
+
+  publish-release:
+    name: Publish immutable five-tenant release
+    if: startsWith(github.ref, 'refs/tags/foundation-v')
+    needs:
+      - validate-repository
+      - build-tenants
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all five tenant artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+
+      - name: Verify all five tenant packages exist
+        run: |
+          set -euo pipefail
+
+          for tenant in pepsico ascension delta mgm schneider; do
+            find release-assets -type f -name "${tenant}-assurance-foundation-*.zip" | grep -q .
+            find release-assets -type f -name "${tenant}-assurance-foundation-*.zip.sha256" | grep -q .
+          done
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          mapfile -t ASSETS < <(
+            find release-assets -type f \
+              \( -name '*.zip' -o -name '*.sha256' \) \
+              -print | sort
+          )
+
+          test "${#ASSETS[@]}" -eq 10
+
+          gh release create "$GITHUB_REF_NAME" \
+            --title "$GITHUB_REF_NAME" \
+            --notes "Five foundation-only UKG SDM-shaped tenant packages. No workforce, biometric, payroll-result, or synthetic-history data is included." \
+            "${ASSETS[@]}"
