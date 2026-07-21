@@ -8,6 +8,7 @@ on:
         required: false
         type: boolean
         default: false
+
   pull_request:
     paths:
       - '.github/workflows/build-five-tenant-foundations.yml'
@@ -18,6 +19,7 @@ on:
       - 'scripts/**'
       - 'database/**'
       - 'requirements.txt'
+
   push:
     branches:
       - main
@@ -50,45 +52,98 @@ env:
 jobs:
   validate-repository:
     name: Validate shared foundation contracts
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python with pip cache
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
+          cache-dependency-path: requirements.txt
 
       - name: Install build dependencies
         run: |
           set -euo pipefail
           python -m pip install --upgrade pip
-          pip install --requirement requirements.txt
-          pip install 'sqlfluff>=3,<4'
+          python -m pip install --requirement requirements.txt
+
+      - name: Validate required repository files
+        run: |
+          set -euo pipefail
+
+          required_files=(
+            "requirements.txt"
+            "config/export-object-catalog.yaml"
+            "config/project-object-profiles.yaml"
+            "schemas/export-object-catalog.schema.yaml"
+            "schemas/tenant-foundation.schema.yaml"
+            "scripts/render_foundation.py"
+            "scripts/validate_foundation.py"
+            "database/migrations/0001_extensions_and_schemas.sql"
+            "database/migrations/0002_core_tables.sql"
+            "database/migrations/0003_partitioned_facts.sql"
+            "database/migrations/0004_rls_and_access.sql"
+            "tenants/pepsico/tenant-foundation.yaml"
+            "tenants/ascension/tenant-foundation.yaml"
+            "tenants/delta/tenant-foundation.yaml"
+            "tenants/mgm/tenant-foundation.yaml"
+            "tenants/schneider/tenant-foundation.yaml"
+          )
+
+          for required_file in "${required_files[@]}"; do
+            if [[ ! -f "$required_file" ]]; then
+              echo "MISSING REQUIRED FILE: $required_file" >&2
+              exit 1
+            fi
+            echo "PASS: $required_file"
+          done
 
       - name: Validate all YAML source contracts
         run: |
           set -euo pipefail
+
           python - <<'PY'
           from pathlib import Path
+
           import yaml
           from jsonschema import Draft202012Validator, FormatChecker
 
           checks = [
-              (Path('config/export-object-catalog.yaml'), Path('schemas/export-object-catalog.schema.yaml')),
-              (Path('tenants/pepsico/tenant-foundation.yaml'), Path('schemas/tenant-foundation.schema.yaml')),
-              (Path('tenants/ascension/tenant-foundation.yaml'), Path('schemas/tenant-foundation.schema.yaml')),
-              (Path('tenants/delta/tenant-foundation.yaml'), Path('schemas/tenant-foundation.schema.yaml')),
-              (Path('tenants/mgm/tenant-foundation.yaml'), Path('schemas/tenant-foundation.schema.yaml')),
-              (Path('tenants/schneider/tenant-foundation.yaml'), Path('schemas/tenant-foundation.schema.yaml')),
+              (
+                  Path("config/export-object-catalog.yaml"),
+                  Path("schemas/export-object-catalog.schema.yaml"),
+              ),
+              (
+                  Path("tenants/pepsico/tenant-foundation.yaml"),
+                  Path("schemas/tenant-foundation.schema.yaml"),
+              ),
+              (
+                  Path("tenants/ascension/tenant-foundation.yaml"),
+                  Path("schemas/tenant-foundation.schema.yaml"),
+              ),
+              (
+                  Path("tenants/delta/tenant-foundation.yaml"),
+                  Path("schemas/tenant-foundation.schema.yaml"),
+              ),
+              (
+                  Path("tenants/mgm/tenant-foundation.yaml"),
+                  Path("schemas/tenant-foundation.schema.yaml"),
+              ),
+              (
+                  Path("tenants/schneider/tenant-foundation.yaml"),
+                  Path("schemas/tenant-foundation.schema.yaml"),
+              ),
           ]
 
           for instance_path, schema_path in checks:
-              with instance_path.open(encoding='utf-8') as handle:
+              with instance_path.open(encoding="utf-8") as handle:
                   instance = yaml.safe_load(handle)
-              with schema_path.open(encoding='utf-8') as handle:
+
+              with schema_path.open(encoding="utf-8") as handle:
                   schema = yaml.safe_load(handle)
 
               errors = sorted(
@@ -101,50 +156,74 @@ jobs:
 
               if errors:
                   messages = [
-                      f'{instance_path} {list(error.path)}: {error.message}'
+                      f"{instance_path} {list(error.path)}: {error.message}"
                       for error in errors
                   ]
-                  raise SystemExit('\n'.join(messages))
+                  raise SystemExit("\n".join(messages))
 
-              print(f'PASS: {instance_path}')
+              print(f"PASS: {instance_path}")
           PY
 
       - name: Verify the SDM object catalog contains exactly 337 objects
         run: |
           set -euo pipefail
-          ACTUAL="$(python - <<'PY'
+
+          ACTUAL="$(
+            python - <<'PY'
           import yaml
-          with open('config/export-object-catalog.yaml', encoding='utf-8') as handle:
-              print(len(yaml.safe_load(handle)['spec']['objects']))
+
+          with open(
+              "config/export-object-catalog.yaml",
+              encoding="utf-8",
+          ) as handle:
+              catalog = yaml.safe_load(handle)
+
+          print(len(catalog["spec"]["objects"]))
           PY
           )"
-          test "$ACTUAL" -eq "$EXPECTED_SDM_OBJECTS"
+
+          if [[ "$ACTUAL" -ne "$EXPECTED_SDM_OBJECTS" ]]; then
+            echo "Expected $EXPECTED_SDM_OBJECTS SDM objects; found $ACTUAL." >&2
+            exit 1
+          fi
+
           echo "PASS: $ACTUAL SDM objects"
 
       - name: Validate PostgreSQL and Supabase schema migrations
         run: |
           set -euo pipefail
+
           for migration in database/migrations/*.sql; do
             sqlfluff parse --dialect postgres "$migration" >/dev/null
             echo "PASS: $migration"
           done
 
-          grep -R --line-number --ignore-case --fixed-strings \
+          grep -R \
+            --line-number \
+            --ignore-case \
+            --fixed-strings \
             'partition by list (tenant_id)' \
             database/migrations/0003_partitioned_facts.sql
 
-          grep -R --line-number --ignore-case --fixed-strings \
+          grep -R \
+            --line-number \
+            --ignore-case \
+            --fixed-strings \
             'partition by range (business_date)' \
             database/migrations/0003_partitioned_facts.sql
 
-          grep -R --line-number --ignore-case --fixed-strings \
+          grep -R \
+            --line-number \
+            --ignore-case \
+            --fixed-strings \
             'enable row level security' \
             database/migrations/0004_rls_and_access.sql
 
   build-tenants:
     name: Build ${{ matrix.display_name }} foundation
     needs: validate-repository
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+
     strategy:
       fail-fast: false
       matrix:
@@ -153,18 +232,22 @@ jobs:
             display_name: PepsiCo
             manifest: tenants/pepsico/tenant-foundation.yaml
             primary_project: P05
+
           - slug: ascension
             display_name: Ascension Healthcare
             manifest: tenants/ascension/tenant-foundation.yaml
             primary_project: P02
+
           - slug: delta
             display_name: Delta Air Lines
             manifest: tenants/delta/tenant-foundation.yaml
             primary_project: P03
+
           - slug: mgm
             display_name: MGM Resorts Las Vegas
             manifest: tenants/mgm/tenant-foundation.yaml
             primary_project: P01
+
           - slug: schneider
             display_name: Schneider Electric
             manifest: tenants/schneider/tenant-foundation.yaml
@@ -174,21 +257,23 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python with pip cache
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
+          cache-dependency-path: requirements.txt
 
       - name: Install deterministic build dependencies
         run: |
           set -euo pipefail
           python -m pip install --upgrade pip
-          pip install --requirement requirements.txt
+          python -m pip install --requirement requirements.txt
 
       - name: Render the foundation package from YAML
         run: |
           set -euo pipefail
+
           python scripts/render_foundation.py \
             --tenant-manifest "${{ matrix.manifest }}" \
             --catalog config/export-object-catalog.yaml \
@@ -199,6 +284,7 @@ jobs:
       - name: Validate foundation-only output
         run: |
           set -euo pipefail
+
           python scripts/validate_foundation.py \
             --package "dist/${{ matrix.slug }}" \
             --catalog config/export-object-catalog.yaml \
@@ -207,6 +293,7 @@ jobs:
       - name: Verify exact export structure and empty response collections
         run: |
           set -euo pipefail
+
           PACKAGE="dist/${{ matrix.slug }}"
           EXPORT_ROOT="$PACKAGE/sdm-export"
 
@@ -214,8 +301,18 @@ jobs:
           test -f "$PACKAGE/BUILD-MANIFEST.json"
           test -f "$PACKAGE/SHA256SUMS"
 
-          ACTUAL="$(find "$EXPORT_ROOT" -mindepth 2 -maxdepth 2 -name response.json | wc -l)"
-          test "$ACTUAL" -eq "$EXPECTED_SDM_OBJECTS"
+          ACTUAL="$(
+            find "$EXPORT_ROOT" \
+              -mindepth 2 \
+              -maxdepth 2 \
+              -name response.json |
+              wc -l
+          )"
+
+          if [[ "$ACTUAL" -ne "$EXPECTED_SDM_OBJECTS" ]]; then
+            echo "Expected $EXPECTED_SDM_OBJECTS response files; found $ACTUAL." >&2
+            exit 1
+          fi
 
           python - "$EXPORT_ROOT" <<'PY'
           from pathlib import Path
@@ -223,35 +320,53 @@ jobs:
           import sys
 
           export_root = Path(sys.argv[1])
-          response_files = sorted(export_root.glob('*/response.json'))
+          response_files = sorted(export_root.glob("*/response.json"))
 
           if len(response_files) != 337:
-              raise SystemExit(f'Expected 337 response files; found {len(response_files)}')
+              raise SystemExit(
+                  f"Expected 337 response files; found {len(response_files)}"
+              )
 
           for response_file in response_files:
-              payload = json.loads(response_file.read_text(encoding='utf-8'))
-              if payload.get('itemsRetrieveResponseDTOs') != []:
-                  raise SystemExit(f'Non-empty itemsRetrieveResponseDTOs: {response_file}')
-              if payload.get('itemsRetrieveResponses') != []:
-                  raise SystemExit(f'Non-empty itemsRetrieveResponses: {response_file}')
+              payload = json.loads(
+                  response_file.read_text(encoding="utf-8")
+              )
 
-          print(f'PASS: {len(response_files)} empty SDM response envelopes')
+              if payload.get("itemsRetrieveResponseDTOs") != []:
+                  raise SystemExit(
+                      "Non-empty itemsRetrieveResponseDTOs: "
+                      f"{response_file}"
+                  )
+
+              if payload.get("itemsRetrieveResponses") != []:
+                  raise SystemExit(
+                      "Non-empty itemsRetrieveResponses: "
+                      f"{response_file}"
+                  )
+
+          print(
+              f"PASS: {len(response_files)} empty SDM response envelopes"
+          )
           PY
 
       - name: Reject workforce, biometric, payroll-result, and synthetic-history data
         run: |
           set -euo pipefail
+
           PACKAGE="dist/${{ matrix.slug }}"
 
-          if find "$PACKAGE" -type f | grep -Ei \
-            '/(employees?|persons?|workers?|punches?|timecards?|schedules?|payroll-results?|biometric-templates?|synthetic-history|generated-data)(/|\.|$)'; then
-            echo 'Forbidden operational or synthetic data was generated.' >&2
+          if find "$PACKAGE" -type f |
+            grep -Ei \
+              '/(employees?|persons?|workers?|punches?|timecards?|schedules?|payroll-results?|biometric-templates?|synthetic-history|generated-data)(/|\.|$)'
+          then
+            echo "Forbidden operational or synthetic data was generated." >&2
             exit 1
           fi
 
       - name: Write build metadata
         run: |
           set -euo pipefail
+
           cat > "dist/${{ matrix.slug }}/GITHUB-BUILD-METADATA.json" <<JSON
           {
             "tenant": "${{ matrix.display_name }}",
@@ -269,9 +384,11 @@ jobs:
         id: package
         run: |
           set -euo pipefail
+
           mkdir -p release-assets
 
           ZIP="release-assets/${{ matrix.slug }}-assurance-foundation-${GITHUB_SHA::12}.zip"
+
           (
             cd dist
             zip -q -r "../$ZIP" "${{ matrix.slug }}"
@@ -294,7 +411,9 @@ jobs:
           compression-level: 0
 
       - name: Attest build provenance
-        if: github.event_name == 'workflow_dispatch' && inputs.enable_attestation == true
+        if: >-
+          github.event_name == 'workflow_dispatch' &&
+          inputs.enable_attestation == true
         uses: actions/attest-build-provenance@v2
         with:
           subject-path: ${{ steps.package.outputs.zip }}
@@ -305,7 +424,8 @@ jobs:
     needs:
       - validate-repository
       - build-tenants
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+
     permissions:
       contents: write
 
@@ -321,8 +441,15 @@ jobs:
           set -euo pipefail
 
           for tenant in pepsico ascension delta mgm schneider; do
-            find release-assets -type f -name "${tenant}-assurance-foundation-*.zip" | grep -q .
-            find release-assets -type f -name "${tenant}-assurance-foundation-*.zip.sha256" | grep -q .
+            find release-assets \
+              -type f \
+              -name "${tenant}-assurance-foundation-*.zip" |
+              grep -q .
+
+            find release-assets \
+              -type f \
+              -name "${tenant}-assurance-foundation-*.zip.sha256" |
+              grep -q .
           done
 
       - name: Create GitHub release
@@ -332,12 +459,17 @@ jobs:
           set -euo pipefail
 
           mapfile -t ASSETS < <(
-            find release-assets -type f \
+            find release-assets \
+              -type f \
               \( -name '*.zip' -o -name '*.sha256' \) \
-              -print | sort
+              -print |
+              sort
           )
 
-          test "${#ASSETS[@]}" -eq 10
+          if [[ "${#ASSETS[@]}" -ne 10 ]]; then
+            echo "Expected 10 release assets; found ${#ASSETS[@]}." >&2
+            exit 1
+          fi
 
           gh release create "$GITHUB_REF_NAME" \
             --title "$GITHUB_REF_NAME" \
