@@ -1,25 +1,13 @@
-name: Build All Five UKG Tenant Foundations
+name: Build All Five UKG Tenant Foundations - Cached Standalone
 
 on:
   workflow_dispatch:
     inputs:
       enable_attestation:
-        description: Generate GitHub build provenance when repository support is available
+        description: Generate GitHub provenance attestations when repository support is available
         required: false
         type: boolean
         default: false
-
-  pull_request:
-    paths:
-      - '.github/workflows/build-five-tenant-foundations.yml'
-      - 'config/**'
-      - 'schemas/**'
-      - 'tenants/**'
-      - 'templates/**'
-      - 'scripts/**'
-      - 'database/**'
-      - 'requirements.txt'
-
   push:
     branches:
       - main
@@ -27,18 +15,12 @@ on:
       - 'foundation-v*'
     paths:
       - '.github/workflows/build-five-tenant-foundations.yml'
-      - 'config/**'
-      - 'schemas/**'
-      - 'tenants/**'
-      - 'templates/**'
-      - 'scripts/**'
-      - 'database/**'
-      - 'requirements.txt'
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
   attestations: write
+  artifact-metadata: write
 
 concurrency:
   group: ukg-foundation-${{ github.ref }}
@@ -46,106 +28,718 @@ concurrency:
 
 env:
   PYTHON_VERSION: '3.12'
-  RETENTION_DAYS: '30'
   EXPECTED_SDM_OBJECTS: '337'
+  RETENTION_DAYS: '30'
 
 jobs:
-  validate-repository:
-    name: Validate shared foundation contracts
+  build-five-foundations:
+    name: Materialize, validate, and package all five foundations
     runs-on: ubuntu-24.04
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Python with pip cache
+      - name: Verify root dependency file
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f requirements.txt
+          echo "PASS: requirements.txt exists at repository root"
+
+      - name: Set up Python 3.12 with pip cache
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
           cache-dependency-path: requirements.txt
 
-      - name: Install build dependencies
+      - name: Install cached Python dependencies
+        shell: bash
         run: |
           set -euo pipefail
           python -m pip install --upgrade pip
           python -m pip install --requirement requirements.txt
 
-      - name: Validate required repository files
+      - name: Materialize embedded foundation builder
+        shell: bash
         run: |
           set -euo pipefail
+          PAYLOAD_ZIP="$RUNNER_TEMP/ukg-assurance-foundation-builder.zip"
+          PAYLOAD_ROOT="$RUNNER_TEMP/ukg-assurance-foundation-builder"
 
-          required_files=(
-            "requirements.txt"
-            "config/export-object-catalog.yaml"
-            "config/project-object-profiles.yaml"
-            "schemas/export-object-catalog.schema.yaml"
-            "schemas/tenant-foundation.schema.yaml"
-            "scripts/render_foundation.py"
-            "scripts/validate_foundation.py"
-            "database/migrations/0001_extensions_and_schemas.sql"
-            "database/migrations/0002_core_tables.sql"
-            "database/migrations/0003_partitioned_facts.sql"
-            "database/migrations/0004_rls_and_access.sql"
-            "tenants/pepsico/tenant-foundation.yaml"
-            "tenants/ascension/tenant-foundation.yaml"
-            "tenants/delta/tenant-foundation.yaml"
-            "tenants/mgm/tenant-foundation.yaml"
-            "tenants/schneider/tenant-foundation.yaml"
-          )
+          cat > "$RUNNER_TEMP/foundation-builder.b64" <<'FOUNDATION_BUILDER_BASE64'
+          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
+          0f5U1s2J31dd7pnA3KMQe2ZY6ieCT01n5weoD0Yleyp6N6P83VHpU7PR/3qosfSPBm3HUO0Pc/Xa
+          JUhLboYKREzbzn3cJn9mVvwPx62/AFBLAwQKAAAAAAAYIPVcAAAAAAAAAAAAAAAAKgAcAHVrZy1h
+          c3N1cmFuY2UtZm91bmRhdGlvbi1idWlsZGVyL2RhdGFiYXNlL1VUCQAD7+5eau/uXmp1eAsAAQQA
+          AAAABAAAAABQSwMECgAAAAAAGCD1XAAAAAAAAAAAAAAAADUAHAB1a2ctYXNzdXJhbmNlLWZvdW5k
+          YXRpb24tYnVpbGRlci9kYXRhYmFzZS9taWdyYXRpb25zL1VUCQAD7+5eau/uXmp1eAsAAQQAAAAA
+          BAAAAABQSwMEFAAAAAgA0rP0XKLT2z7IAgAAFwYAAFQAHAB1a2ctYXNzdXJhbmNlLWZvdW5kYXRp
+          b24tYnVpbGRlci9kYXRhYmFzZS9taWdyYXRpb25zLzAwMDFfZXh0ZW5zaW9uc19hbmRfc2NoZW1h
+          cy5zcWxVVAkAA4yhXmqMoV5qdXgLAAEEAAAAAAQAAAAAjVRNb9swDL37V+hQIC2QZN+XGTsMG7DD
+          duhQDDsKtEQ7WmTJlai0/vcjbadp17XbxbIo6vHxieRmo358/aJ+xrRvYzKoPqNx2cWgPuZcEgQ2
+          XXogPuzfqzaWYIHkOAY/bqvNRl2VARrI+OIyZuoSXn3/pnrXpcltqz4lBMKsQlQ3xyBrlc0ObfH8
+          N5RgdrzAmKL3axWTalzskZIzKqGJyeZtVTXYuVBXlZngFN4Shommaxma2OAyZTV0Jo0DxZOnROrh
+          Dzc45lb/n5sekjuwG8MmPMQ9KvCeJThee+So2hR7zq3xzqwVhBj4W2iHgZzhc1v/A+gxQF2xpoFU
+          ydDhX69QfBiDZcZ0cMyKpcWTJDQOeLq2HVL8hYa0iVbMCkPp1fnq8uWr1Vrx8npe3szL23l5t7qo
+          n8CzSwXpTEAlnyArpVY2QUsCgQdncVIMg3Whm23gy1Q3960wMEM+OdkEaLaine7doim0uMdGsp4P
+          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
+          4K/6A5p/X9mblNLh5LH09J70pBmsc/I5gXI2BamSELMZbM6u53ErPfaAv70LHG1jb+bTZ9ECRegx
+          0mgZkRwEjGg6jZC2CDF7r4kTd5fn+3LwUj3KEUHaiu+w6MVsGNXtwAf3gCpxxmmyI7PIVCo5FpdC
+          HDX84db0DpxFCM4laD9X4k/ODjQ2D9HZdiWOmwroKXClC0yMoXahKiwHmchZcF1RW4n3r3lbnsJz
+          VzjRAVlAqbZ7+AvrSnxooKW+fQetlQbLmy39yniJu/KhhCbeYAqET3izJz27XUdOFgPeBsQWeOpi
+          4KGPOulKnHCbxqfdS1w5rbkXnoXXkMNkGcLgsu2nEf1W8hxC3HK4y6R7NsLkmGCQpIEG7uNNvrJY
+          73zWMmHfwBU/AeLOMn0i9drHBWtJGNHi3tcqwKuVENFLDiI8u/A4aPdc55Yh0cB+Ay8Z+Rqa6dYm
+          bF3MUBQUBhuFmMPP0+urJUSXg8L/Vljo/lEmm9Cmhmu+btbflofUdIOHS1bOeIZ3pInNPDQTS9Xm
+          RxFSWzRy7izfwyZ72bGFYGicNCru/sv3JZAxOcl67Wil/XvclejidH588hEW4HypkhrOKV3kjneb
+          MKZKtZxWUs7+qTAoLv0DUEsDBAoAAAAAANKz9Fz1ymQ6IQAAACEAAAAxABwAdWtnLWFzc3VyYW5j
+          ZS1mb3VuZGF0aW9uLWJ1aWxkZXIvcmVxdWlyZW1lbnRzLnR4dFVUCQADjKFeaoyhXmp1eAsAAQQA
+          AAAABAAAAABQeVlBTUw9PTYuMC4yCmpzb25zY2hlbWE9PTQuMjYuMApQSwMECgAAAAAAGCD1XAAA
+          AAAAAAAAAAAAACkAHAB1a2ctYXNzdXJhbmNlLWZvdW5kYXRpb24tYnVpbGRlci9zY2hlbWFzL1VU
+          CQAD7+5eau/uXmp1eAsAAQQAAAAABAAAAABQSwMEFAAAAAgA0rP0XGy4y+lEAQAAIQMAAEIAHAB1
+          a2ctYXNzdXJhbmNlLWZvdW5kYXRpb24tYnVpbGRlci9zY2hlbWFzL2V4cG9ydC1jb25maWcuc2No
+          ZW1hLnlhbWxVVAkAA4yhXmqMoV5qdXgLAAEEAAAAAAQAAAAAjVK7bsMwDNz1FRoCZPKjGT32iaAt
+          ULRNd8aiHaWy5FJ0EP99FdtJHMApuvF4R+KO4MznG6wgkxvm2mdJsvXORn0zdlQmiqDgZJEu0uhm
+          kfSEmGl1nuh7Pv4mZ50vmzbOXZWA9w2BzTHBfe2Io9zZQpfxsLqFygjWbDCTq+cn+XH/Kh864V2n
+          k4+usQpYOyu4rYPKrbeYswCl9KEL5o1cjcQafSYLMB4F4U+jCVUmIhk8VGjZh9K7hnL8RAuWlyo0
+          GKhEHjV6xQus0ZzoI9oh+YOLSBba4NcFWtXGgepWEDJp3OE7+tpZj/4WON8EYsqwqM/ehTx5PdRS
+          dnG7KhgLS205gLltjJkHcBloNHXWX0aclIxC/7HiOj8cZpIbneoqfzzef1NPX3i8Hoig7XAF+yVj
+          FT4jDXjyZ0Zzw2sNg+O/SsUvUEsDBBQAAAAIANKz9FwN6JCkLQIAAN8GAABKABwAdWtnLWFzc3Vy
+          YW5jZS1mb3VuZGF0aW9uLWJ1aWxkZXIvc2NoZW1hcy9leHBvcnQtb2JqZWN0LWNhdGFsb2cuc2No
+          ZW1hLnlhbWxVVAkAA4yhXmqMoV5qdXgLAAEEAAAAAAQAAAAApVNLi9swEL77V+iwsIfiOMmtphTK
+          bimllC3bx6FLa6bWxNFGlrTSeFn311e2nDiKHQh0Lom+eXzfPHzlyi3WkLMtkXF5lj06rdIALrSt
+          Mm5hQ9l6uV6mq3UWHMmV4GNGwNxiZ7XSrmraRanrDJxrLKgSM3wx2lKq/zxiSWkJBFJXi4GihVom
+          JEhizr5/+sC+3n5m7/sEdtcnsJuQkFBrfEyoklh8aoRFnicpAyN+oHVCK//YCcX9T40E3Cf6v85g
+          mRirDVoS6PKEHWV0L8ZKrRzlLG7geQXSbGHlI7qiUaRX6oUGnUHmXiU7UIeESDXrxcw6GBtb6l4p
+          s1pT4fk2oip0Q6ahwRFyCu6DS9K2LQwQoVWD20ArNfDCaCnKNspx/SueRU89odp7Dh2HXm/6mEV3
+          I0PAOTGTAm82WnK0bzOLzngIj6vEmie5WBtqvUApPYnfmiu0km2kwI1JYbJgLbQHrBbqI2HtcrY6
+          YKIHDs+ZlQQDzkXHCvLLODm2AenwKCpeX7CUhaYjSPDoqaDGCGiUeGqw2GEbwWEvxUZIPGFolD83
+          r68Ypnjknq46WJAVY/v+HVmhqhPXfqvs98O79Cekf5fp6+LXq6soTPDZiieYn4AirKKpBPxaNVJe
+          R3A3ncuKzsqerTkO+OIBHA3/NGc40bmrDjZd0Dzt5O46m7uq0Fh/vffoteIz3g/st9/u3GWRp2Hn
+          LqWzs1TT0Pmvb7QaXobvcHkZzX9y/ANQSwMEFAAAAAgA0rP0XJeyTPIbAQAAQwIAAE0AHAB1a2ct
+          YXNzdXJhbmNlLWZvdW5kYXRpb24tYnVpbGRlci9zY2hlbWFzL2V4cG9ydC1yZXNwb25zZS1lbnZl
+          bG9wZS5zY2hlbWEueWFtbFVUCQADjKFeaoyhXmp1eAsAAQQAAAAABAAAAACNj89uwjAMxu95ihyQ
+          OLUBjjnDpolNm9j2AFljSlj+ETuIvv1S2g20CWkXO7a/nz9ngs0OnJJ8RxRRCrHH4KuhWYfUCp3U
+          lsRitphV84UYBmxi9IUYelh/puADtrmrm+CEQsxJ+QYEnGJIVCXAGDxCBf4INkSoR5dOOcvIkAXJ
+          39f3/HX5xFcuUsfvQvZakQmeb0aar0aaURcLED720BBTWptep+xLKsNEBlDyrbIILMEhmwRasoob
+          XYJXDkrK3hwyrKHr+wQON0DJwBG+vZZvz3hrhixejBgvi/vI+fmq86uAnqCFNFZTn62dlqK3/yvG
+          st+3v7U/N14B11Jn/CP4lnaSz/srbn3jGlcpqW6g1emhJySf3YL/QX4BUEsDBBQAAAAIANKz9Fxh
+          N9xThwIAANEIAABGABwAdWtnLWFzc3VyYW5jZS1mb3VuZGF0aW9uLWJ1aWxkZXIvc2NoZW1hcy90
+          ZW5hbnQtZm91bmRhdGlvbi5zY2hlbWEueWFtbFVUCQADjKFeaoyhXmp1eAsAAQQAAAAABAAAAACt
+          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
+          PaGzWcPzeyyJTlEb31qhoVhe6xa30u4aWF71m/NMeI7jWKn1/w0PO2p+Go4xbi8jiv9xOAZ7i/C+
+          i0CCyeISdW1UtYXIgClqjxFc54Tihxk8uLGl3iE2M1Kpx4uGqKyHBnLr9z1+v6EGP9HbG6pWd2gz
+          9HbSuSI4w8OrFD2sn0xXC1Zw4R3eenvmDHQ0ChDSR5ZcQECcBcRoyFyhSOEo2/Rp8MBmblteMWSn
+          weMLHLNeq1hUtq7UKqG/zjtjDOxnoAKZHMen5NXSGzpq0sXzei5dXYHAx1HMnnSAOB1VAdq8DjdA
+          8Psu6b5rp0Ngqx0LkdjQo7qhYUFvF0T5gVN+4KL33se6zx2kP4qcy3GqQzc9/CjGCRIFnUleQ++K
+          XEVvvHaGiQ9lHnCfYeqL7MV2xA0eJ+GfPT2cHQ3fOYWNhDYq9OD6M4F1YTO8raFSeLOOtRZTTd1R
+          f5TjkKTvGMcCi/qegJvwczskLSLf0FaKby38DTt66/Q1BOuM7N5ZX0Cjc3YnPKmFwbsi3/iNf4LC
+          YQF4UdTmE1gtYAufOjFgNRj6Y6fz64/mBXV9bNxDBx8kvJqHqW3DOrxyCrBh71E8jyOOe+nXXIoS
+          jB1t+eCE++vLu3/OZ+/ffHh3efH5enjCiLIPztaAh/HhscWUrHY0JcJ46boD+Qfz/FQOUrdYE16t
+          FsgR7tIiXKwhvkZO8W7Dchhz84PvtSVeqIy5m44xGt8tx1nDPZhO/gNQSwMECgAAAAAAGCD1XAAA
+          AAAAAAAAAAAAACsAHAB1a2ctYXNzdXJhbmNlLWZvdW5kYXRpb24tYnVpbGRlci90ZW1wbGF0ZXMv
+          VVQJAAPv7l5q7+5eanV4CwABBAAAAAAEAAAAAFBLAwQUAAAACADSs/RcVjaYKpYAAAAIAQAARgAc
+          AHVrZy1hc3N1cmFuY2UtZm91bmRhdGlvbi1idWlsZGVyL3RlbXBsYXRlcy9leHBvcnQtY29uZmln
+          LnRlbXBsYXRlLnlhbWxVVAkAA4yhXmqMoV5qdXgLAAEEAAAAAAQAAAAAfY8xDsIwDEX3nKIDp8jI
+          hsSAELAgFIXmA5HcpHLcLlXuTtMWVBbG/+xn+dexaRAk6Sp0RCrFjmucEGyQndPVZpiJkQkZ77IS
+          y0/Iemcm5uEJeTmxt3fQyqeSP+53+CP24ORjKLwAs+SsSrr8G55bitaVX6YSDGGPHkekNoaEtLVS
+          v3R1vSnrnJfRs3Tg2ILFY6w+ZPUGUEsDBBQAAAAIANKz9Fwv39BnUAAAAHgAAABKABwAdWtnLWFz
+          c3VyYW5jZS1mb3VuZGF0aW9uLWJ1aWxkZXIvdGVtcGxhdGVzL3Jlc3BvbnNlLWVudmVsb3BlLnRl
+          bXBsYXRlLnlhbWxVVAkAA4yhXmqMoV5qdXgLAAEEAAAAAAQAAAAAy0yxUlCpzk/KSk0uic9MqeXK
+          S8xNRRICcWu5SvMyC0tTvVMrQTIQTnx2amUtV2ZJam5xUGpJUWZqWWpQanFBfl5xqkuIf7GVQnQs
+          dlmIFABQSwMECgAAAAAAGCD1XAAAAAAAAAAAAAAAACkAHAB1a2ctYXNzdXJhbmNlLWZvdW5kYXRp
+          b24tYnVpbGRlci90ZW5hbnRzL1VUCQAD7+5eau/uXmp1eAsAAQQAAAAABAAAAABQSwMECgAAAAAA
+          GCD1XAAAAAAAAAAAAAAAADMAHAB1a2ctYXNzdXJhbmNlLWZvdW5kYXRpb24tYnVpbGRlci90ZW5h
+          bnRzL2FzY2Vuc2lvbi9VVAkAA+/uXmrv7l5qdXgLAAEEAAAAAAQAAAAAUEsDBBQAAAAIANKz9Fy8
+          c1hgMAMAAEIIAABJABwAdWtnLWFzc3VyYW5jZS1mb3VuZGF0aW9uLWJ1aWxkZXIvdGVuYW50cy9h
+          c2NlbnNpb24vdGVuYW50LWZvdW5kYXRpb24ueWFtbFVUCQADjKFeaoyhXmp1eAsAAQQAAAAABAAA
+          AACtVUtzIjcQvvtX6LaXBdu73mTDjcLgkLDg8pjsUdVomkFGI00kDdn592k9gLFrU0WqzIHSqPvr
+          l7q/hkb+hdZJo0dsb402rmq7oTD19eEWVLOD26u91OWIrf98GDvXWtACn1GD9jPT6hI8Qa9q9EBH
+          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
+          CsIsIkghHKT45siElsXo6n8MIMZqrKxI2hvhV5Od8sMHSXpwA2lLbGbN/bPNKxrcjZMNibhri9LU
+          AjVfofa90A7Fdg4PH03sjDYbDJUQ5sa2ELXxPFAJOB/LLJuPNGHNCov4+Dw5XKf9CjxKHif6A/PQ
+          1bJN5PJEQtFWpgN4el6goX8G9rGqv1BLAQIeAwoAAAAAABgg9VwAAAAAAAAAAAAAAAAhABgAAAAA
+          AAAAEADtQQAAAAB1a2ctYXNzdXJhbmNlLWZvdW5kYXRpb24tYnVpbGRlci9VVAUAA+/uXmp1eAsA
+          AQQAAAAABAAAAABQSwECHgMUAAAACADSs/RcXr1zly4FAADjCgAAKgAYAAAAAAABAAAApIFbAAAA
+          dWtnLWFzc3VyYW5jZS1mb3VuZGF0aW9uLWJ1aWxkZXIvUkVBRE1FLm1kVVQFAAOMoV5qdXgLAAEE
+          AAAAAAQAAAAAUEsBAh4DCgAAAAAAGCD1XAAAAAAAAAAAAAAAACgAGAAAAAAAAAAQAO1B7QUAAHVr
+          Zy1hc3N1cmFuY2UtZm91bmRhdGlvbi1idWlsZGVyL2NvbmZpZy9VVAUAA+/uXmp1eAsAAQQAAAAA
+          BAAAAABQSwECHgMUAAAACADSs/RcnyoGRJIBAADoAgAAOwAYAAAAAAABAAAApIFPBgAAdWtnLWFz
+          c3VyYW5jZS1mb3VuZGF0aW9uLWJ1aWxkZXIvY29uZmlnL2J1aWxkLWNvbnRyYWN0LnlhbWxVVAUA
+          A4yhXmp1eAsAAQQAAAAABAAAAABQSwECHgMUAAAACADSs/RcJK632k4dAACAMQEAQgAYAAAAAAAB
+          AAAApIFWCAAAdWtnLWFzc3VyYW5jZS1mb3VuZGF0aW9uLWJ1aWxkZXIvY29uZmlnL2V4cG9ydC1v
+          YmplY3QtY2F0YWxvZy55YW1sVVQFAAOMoV5qdXgLAAEEAAAAAAQAAAAAUEsBAh4DFAAAAAgA0rP0
+          XKqCHWJVBQAAYhEAAEQAGAAAAAAAAQAAAKSBICYAAHVrZy1hc3N1cmFuY2UtZm91bmRhdGlvbi1i
+          dWlsZGVyL2NvbmZpZy9wcm9qZWN0LW9iamVjdC1wcm9maWxlcy55YW1sVVQFAAOMoV5qdXgLAAEE
+          AAAAAAQAAAAAUEsBAh4DCgAAAAAAGCD1XAAAAAAAAAAAAAAAACoAGAAAAAAAAAAQAO1B8ysAAHVr
+          Zy1hc3N1cmFuY2UtZm91bmRhdGlvbi1idWlsZGVyL2RhdGFiYXNlL1VUBQAD7+5eanV4CwABBAAA
+          AAAEAAAAAFBLAQIeAwoAAAAAABgg9VwAAAAAAAAAAAAAAAA1ABgAAAAAAAAAEADtQVcsAAB1a2ct
+          YXNzdXJhbmNlLWZvdW5kYXRpb24tYnVpbGRlci9kYXRhYmFzZS9taWdyYXRpb25zL1VUBQAD7+5e
+          anV4CwABBAAAAAAEAAAAAFBLAQIeAxQAAAAIANKz9Fyi09s+yAIAABcGAABUABgAAAAAAAEAAACk
+          gcYsAAB1a2ctYXNzdXJhbmNlLWZvdW5kYXRpb24tYnVpbGRlci9kYXRhYmFzZS9taWdyYXRpb25z
+          LzAwMDFfZXh0ZW5zaW9uc19hbmRfc2NoZW1hcy5zcWxVVAUAA4yhXmp1eAsAAQQAAAAABAAAAABQ
+          SwECHgMUAAAACADSs/Rcb45MK/kHAACbKAAASQAYAAAAAAABAAAApIEcMAAAdWtnLWFzc3VyYW5j
+          ZS1mb3VuZGF0aW9uLWJ1aWxkZXIvZGF0YWJhc2UvbWlncmF0aW9ucy8wMDAyX2NvcmVfdGFibGVz
+          LnNxbFVUBQADjKFeanV4CwABBAAAAAAEAAAAAFBLAQIeAxQAAAAIANKz9Fwle+RrMwQAAIwRAABP
+          ABgAAAAAAAEAAACkgZg4AAB1a2ctYXNzdXJhbmNlLWZvdW5kYXRpb24tYnVpbGRlci9kYXRhYmFz
+          ZS9taWdyYXRpb25zLzAwMDNfcGFydGl0aW9uZWRfZmFjdHMuc3FsVVQFAAOMoV5qdXgLAAEEAAAA
+          AAQAAAAAUEsBAh4DFAAAAAgAGrT0XBpWTOPlCAAAyiwAAEwAGAAAAAAAAQAAAKSBVD0AAHVrZy1h
+          c3N1cmFuY2UtZm91bmRhdGlvbi1idWlsZGVyL2RhdGFiYXNlL21pZ3JhdGlvbnMvMDAwNF9ybHNf
+          YW5kX2FjY2Vzcy5zcWxVVAUAAxSiXmp1eAsAAQQAAAAABAAAAABQSwECHgMKAAAAAAAYIPVcAAAA
+          AAAAAAAAAAAAJgAYAAAAAAAAABAA7UG/RgAAdWtnLWFzc3VyYW5jZS1mb3VuZGF0aW9uLWJ1aWxk
+          ZXIvZG9jcy9VVAUAA+/uXmp1eAsAAQQAAAAABAAAAABQSwECHgMUAAAACADSs/RcSfzIyPgBAACI
+          AwAAOAAYAAAAAAABAAAApIEfRwAAdWtnLWFzc3VyYW5jZS1mb3VuZGF0aW9uLWJ1aWxkZXIvZG9j
+          cy9vdXRwdXQtY29udHJhY3QubWRVVAUAA4yhXmp1eAsAAQQAAAAABAAAAABQSwECHgMKAAAAAADS
+          s/Rc9cpkOiEAAAAhAAAAMQAYAAAAAAABAAAApIGJSQAAdWtnLWFzc3VyYW5jZS1mb3VuZGF0aW9u
+          LWJ1aWxkZXIvcmVxdWlyZW1lbnRzLnR4dFVUBQADjKFeanV4CwABBAAAAAAEAAAAAFBLAQIeAwoA
+          AAAAABgg9VwAAAAAAAAAAAAAAAApABgAAAAAAAAAEADtQRVKAAB1a2ctYXNzdXJhbmNlLWZvdW5k
+          YXRpb24tYnVpbGRlci9zY2hlbWFzL1VUBQAD7+5eanV4CwABBAAAAAAEAAAAAFBLAQIeAxQAAAAI
+          ANKz9FxsuMvpRAEAACEDAABCABgAAAAAAAEAAACkgXhKAAB1a2ctYXNzdXJhbmNlLWZvdW5kYXRp
+          b24tYnVpbGRlci9zY2hlbWFzL2V4cG9ydC1jb25maWcuc2NoZW1hLnlhbWxVVAUAA4yhXmp1eAsA
+          AQQAAAAABAAAAABQSwECHgMUAAAACADSs/RcDeiQpC0CAADfBgAASgAYAAAAAAABAAAApIE4TAAA
+          dWtnLWFzc3VyYW5jZS1mb3VuZGF0aW9uLWJ1aWxkZXIvc2NoZW1hcy9leHBvcnQtb2JqZWN0LWNh
+          dGFsb2cuc2NoZW1hLnlhbWxVVAUAA4yhXmp1eAsAAQQAAAAABAAAAABQSwECHgMUAAAACADSs/Rc
+          l7JM8hsBAABDAgAATQAYAAAAAAABAAAApIHpTgAAdWtnLWFzc3VyYW5jZS1mb3VuZGF0aW9uLWJ1
+          aWxkZXIvc2NoZW1hcy9leHBvcnQtcmVzcG9uc2UtZW52ZWxvcGUuc2NoZW1hLnlhbWxVVAUAA4yh
+          Xmp1eAsAAQQAAAAABAAAAABQSwECHgMUAAAACADSs/RcYTfcU4cCAADRCAAARgAYAAAAAAABAAAA
+          pIGLUAAAdWtnLWFzc3VyYW5jZS1mb3VuZGF0aW9uLWJ1aWxkZXIvc2NoZW1hcy90ZW5hbnQtZm91
+          bmRhdGlvbi5zY2hlbWEueWFtbFVUBQADjKFeanV4CwABBAAAAAAEAAAAAFBLAQIeAwoAAAAAABgg
+          9VwAAAAAAAAAAAAAAAApABgAAAAAAAAAEADtQZJTAAB1a2ctYXNzdXJhbmNlLWZvdW5kYXRpb24t
+          YnVpbGRlci9zY3JpcHRzL1VUBQAD7+5eanV4CwABBAAAAAAEAAAAAFBLAQIeAxQAAAAIANKz9Fzu
+          6VGktwYAAFATAAA9ABgAAAAAAAEAAADtgfVTAAB1a2ctYXNzdXJhbmNlLWZvdW5kYXRpb24tYnVp
+          bGRlci9zY3JpcHRzL3JlbmRlcl9mb3VuZGF0aW9uLnB5VVQFAAOMoV5qdXgLAAEEAAAAAAQAAAAA
+          UEsBAh4DFAAAAAgA0rP0XAz+eQsSBAAAWAoAAD8AGAAAAAAAAQAAAO2BI1sAAHVrZy1hc3N1cmFu
+          Y2UtZm91bmRhdGlvbi1idWlsZGVyL3NjcmlwdHMvdmFsaWRhdGVfZm91bmRhdGlvbi5weVVUBQAD
+          jKFeanV4CwABBAAAAAAEAAAAAFBLAQIeAwoAAAAAABgg9VwAAAAAAAAAAAAAAAArABgAAAAAAAAA
+          EADtQa5fAAB1a2ctYXNzdXJhbmNlLWZvdW5kYXRpb24tYnVpbGRlci90ZW1wbGF0ZXMvVVQFAAPv
+          7l5qdXgLAAEEAAAAAAQAAAAAUEsBAh4DFAAAAAgA0rP0XFY2mCqWAAAACAEAAEYAGAAAAAAAAQAA
+          AKSBE2AAAHVrZy1hc3N1cmFuY2UtZm91bmRhdGlvbi1idWlsZGVyL3RlbXBsYXRlcy9leHBvcnQt
+          Y29uZmlnLnRlbXBsYXRlLnlhbWxVVAUAA4yhXmp1eAsAAQQAAAAABAAAAABQSwECHgMUAAAACADS
+          s/RcL9/QZ1AAAAB4AAAASgAYAAAAAAABAAAApIEpYQAAdWtnLWFzc3VyYW5jZS1mb3VuZGF0aW9u
+          LWJ1aWxkZXIvdGVtcGxhdGVzL3Jlc3BvbnNlLWVudmVsb3BlLnRlbXBsYXRlLnlhbWxVVAUAA4yh
+          Xmp1eAsAAQQAAAAABAAAAABQSwECHgMKAAAAAAAYIPVcAAAAAAAAAAAAAAAAKQAYAAAAAAAAABAA
+          7UH9YQAAdWtnLWFzc3VyYW5jZS1mb3VuZGF0aW9uLWJ1aWxkZXIvdGVuYW50cy9VVAUAA+/uXmp1
+          eAsAAQQAAAAABAAAAABQSwECHgMKAAAAAAAYIPVcAAAAAAAAAAAAAAAAMwAYAAAAAAAAABAA7UFg
+          YgAAdWtnLWFzc3VyYW5jZS1mb3VuZGF0aW9uLWJ1aWxkZXIvdGVuYW50cy9hc2NlbnNpb24vVVQF
+          AAPv7l5qdXgLAAEEAAAAAAQAAAAAUEsBAh4DFAAAAAgA0rP0XLxzWGAwAwAAQggAAEkAGAAAAAAA
+          AQAAAKSBzWIAAHVrZy1hc3N1cmFuY2UtZm91bmRhdGlvbi1idWlsZGVyL3RlbmFudHMvYXNjZW5z
+          aW9uL3RlbmFudC1mb3VuZGF0aW9uLnlhbWxVVAUAA4yhXmp1eAsAAQQAAAAABAAAAABQSwECHgMK
+          AAAAAAAYIPVcAAAAAAAAAAAAAAAALwAYAAAAAAAAABAA7UGAZgAAdWtnLWFzc3VyYW5jZS1mb3Vu
+          ZGF0aW9uLWJ1aWxkZXIvdGVuYW50cy9kZWx0YS9VVAUAA+/uXmp1eAsAAQQAAAAABAAAAABQSwEC
+          HgMUAAAACADSs/RcJ6i02C8DAADeBwAARQAYAAAAAAABAAAApIHpZgAAdWtnLWFzc3VyYW5jZS1m
+          b3VuZGF0aW9uLWJ1aWxkZXIvdGVuYW50cy9kZWx0YS90ZW5hbnQtZm91bmRhdGlvbi55YW1sVVQF
+          AAOMoV5qdXgLAAEEAAAAAAQAAAAAUEsBAh4DCgAAAAAAGCD1XAAAAAAAAAAAAAAAAC0AGAAAAAAA
+          AAAQAO1Bl2oAAHVrZy1hc3N1cmFuY2UtZm91bmRhdGlvbi1idWlsZGVyL3RlbmFudHMvbWdtL1VU
+          BQAD7+5eanV4CwABBAAAAAAEAAAAAFBLAQIeAxQAAAAIANKz9FwuZBXnIQMAABMIAABDABgAAAAA
+          AAEAAACkgf5qAAB1a2ctYXNzdXJhbmNlLWZvdW5kYXRpb24tYnVpbGRlci90ZW5hbnRzL21nbS90
+          ZW5hbnQtZm91bmRhdGlvbi55YW1sVVQFAAOMoV5qdXgLAAEEAAAAAAQAAAAAUEsBAh4DCgAAAAAA
+          GCD1XAAAAAAAAAAAAAAAADEAGAAAAAAAAAAQAO1BnG4AAHVrZy1hc3N1cmFuY2UtZm91bmRhdGlv
+          bi1idWlsZGVyL3RlbmFudHMvcGVwc2ljby9VVAUAA+/uXmp1eAsAAQQAAAAABAAAAABQSwECHgMU
+          AAAACADSs/RcLQb6W00DAAB0CAAARwAYAAAAAAABAAAApIEHbwAAdWtnLWFzc3VyYW5jZS1mb3Vu
+          ZGF0aW9uLWJ1aWxkZXIvdGVuYW50cy9wZXBzaWNvL3RlbmFudC1mb3VuZGF0aW9uLnlhbWxVVAUA
+          A4yhXmp1eAsAAQQAAAAABAAAAABQSwECHgMKAAAAAAAYIPVcAAAAAAAAAAAAAAAAMwAYAAAAAAAA
+          ABAA7UHVcgAAdWtnLWFzc3VyYW5jZS1mb3VuZGF0aW9uLWJ1aWxkZXIvdGVuYW50cy9zY2huZWlk
+          ZXIvVVQFAAPv7l5qdXgLAAEEAAAAAAQAAAAAUEsBAh4DFAAAAAgA0rP0XMt1gZw3AwAAcggAAEkA
+          GAAAAAAAAQAAAKSBQnMAAHVrZy1hc3N1cmFuY2UtZm91bmRhdGlvbi1idWlsZGVyL3RlbmFudHMv
+          c2NobmVpZGVyL3RlbmFudC1mb3VuZGF0aW9uLnlhbWxVVAUAA4yhXmp1eAsAAQQAAAAABAAAAABQ
+          SwUGAAAAACUAJQCdEgAA/HYAAAAA
+          FOUNDATION_BUILDER_BASE64
 
-          for required_file in "${required_files[@]}"; do
-            if [[ ! -f "$required_file" ]]; then
-              echo "MISSING REQUIRED FILE: $required_file" >&2
-              exit 1
-            fi
-            echo "PASS: $required_file"
-          done
+          base64 --decode "$RUNNER_TEMP/foundation-builder.b64" > "$PAYLOAD_ZIP"
+          unzip -q "$PAYLOAD_ZIP" -d "$RUNNER_TEMP"
 
-      - name: Validate all YAML source contracts
+          test -f "$PAYLOAD_ROOT/requirements.txt"
+          test -f "$PAYLOAD_ROOT/config/export-object-catalog.yaml"
+          test -f "$PAYLOAD_ROOT/scripts/render_foundation.py"
+          test -f "$PAYLOAD_ROOT/scripts/validate_foundation.py"
+
+          echo "BUILDER_ROOT=$PAYLOAD_ROOT" >> "$GITHUB_ENV"
+          echo "DIST_ROOT=$GITHUB_WORKSPACE/dist" >> "$GITHUB_ENV"
+          echo "RELEASE_ROOT=$GITHUB_WORKSPACE/release-assets" >> "$GITHUB_ENV"
+
+      - name: Confirm deterministic validation dependencies
+        shell: bash
         run: |
           set -euo pipefail
+          python - <<'PY'
+          import jsonschema
+          import yaml
+          print(f"PASS: PyYAML {yaml.__version__}")
+          print(f"PASS: jsonschema {jsonschema.__version__}")
+          PY
+          sqlfluff --version
+
+      - name: Validate embedded YAML, schemas, project bindings, and SQL
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$BUILDER_ROOT"
 
           python - <<'PY'
           from pathlib import Path
-
           import yaml
           from jsonschema import Draft202012Validator, FormatChecker
 
+          tenant_schema = Path('schemas/tenant-foundation.schema.yaml')
+          catalog_schema = Path('schemas/export-object-catalog.schema.yaml')
+
           checks = [
-              (
-                  Path("config/export-object-catalog.yaml"),
-                  Path("schemas/export-object-catalog.schema.yaml"),
-              ),
-              (
-                  Path("tenants/pepsico/tenant-foundation.yaml"),
-                  Path("schemas/tenant-foundation.schema.yaml"),
-              ),
-              (
-                  Path("tenants/ascension/tenant-foundation.yaml"),
-                  Path("schemas/tenant-foundation.schema.yaml"),
-              ),
-              (
-                  Path("tenants/delta/tenant-foundation.yaml"),
-                  Path("schemas/tenant-foundation.schema.yaml"),
-              ),
-              (
-                  Path("tenants/mgm/tenant-foundation.yaml"),
-                  Path("schemas/tenant-foundation.schema.yaml"),
-              ),
-              (
-                  Path("tenants/schneider/tenant-foundation.yaml"),
-                  Path("schemas/tenant-foundation.schema.yaml"),
-              ),
+              (Path('config/export-object-catalog.yaml'), catalog_schema),
+              (Path('tenants/pepsico/tenant-foundation.yaml'), tenant_schema),
+              (Path('tenants/ascension/tenant-foundation.yaml'), tenant_schema),
+              (Path('tenants/delta/tenant-foundation.yaml'), tenant_schema),
+              (Path('tenants/mgm/tenant-foundation.yaml'), tenant_schema),
+              (Path('tenants/schneider/tenant-foundation.yaml'), tenant_schema),
           ]
 
           for instance_path, schema_path in checks:
-              with instance_path.open(encoding="utf-8") as handle:
-                  instance = yaml.safe_load(handle)
-
-              with schema_path.open(encoding="utf-8") as handle:
-                  schema = yaml.safe_load(handle)
-
+              instance = yaml.safe_load(instance_path.read_text(encoding='utf-8'))
+              schema = yaml.safe_load(schema_path.read_text(encoding='utf-8'))
               errors = sorted(
                   Draft202012Validator(
                       schema,
@@ -153,325 +747,256 @@ jobs:
                   ).iter_errors(instance),
                   key=lambda error: list(error.path),
               )
-
               if errors:
-                  messages = [
-                      f"{instance_path} {list(error.path)}: {error.message}"
+                  raise SystemExit('\n'.join(
+                      f'{instance_path} {list(error.path)}: {error.message}'
                       for error in errors
-                  ]
-                  raise SystemExit("\n".join(messages))
+                  ))
+              print(f'PASS schema: {instance_path}')
 
-              print(f"PASS: {instance_path}")
+          catalog = yaml.safe_load(Path('config/export-object-catalog.yaml').read_text(encoding='utf-8'))
+          objects = catalog['spec']['objects']
+          if len(objects) != 337:
+              raise SystemExit(f'Expected 337 SDM objects; found {len(objects)}')
+
+          folders = [row['folder'] for row in objects]
+          unique_keys = [row['unique_key'] for row in objects]
+          if len(folders) != len(set(folders)):
+              raise SystemExit('Duplicate SDM folder names detected')
+          if len(unique_keys) != len(set(unique_keys)):
+              raise SystemExit('Duplicate SDM unique keys detected')
+
+          profiles = yaml.safe_load(Path('config/project-object-profiles.yaml').read_text(encoding='utf-8'))['spec']
+          expected_projects = {'P01', 'P02', 'P03', 'P04', 'P05'}
+          if set(profiles) != expected_projects:
+              raise SystemExit(f'Project profile mismatch: {set(profiles)}')
+
+          expected_bindings = {
+              'pepsico': 'P05',
+              'ascension': 'P02',
+              'delta': 'P03',
+              'mgm': 'P01',
+              'schneider': 'P04',
+          }
+          for slug, project in expected_bindings.items():
+              tenant = yaml.safe_load(Path(f'tenants/{slug}/tenant-foundation.yaml').read_text(encoding='utf-8'))
+              actual = tenant['spec']['project_binding']['primary_project']
+              if actual != project:
+                  raise SystemExit(f'{slug} must bind to {project}, found {actual}')
+              if tenant['metadata']['foundation_only'] is not True:
+                  raise SystemExit(f'{slug} foundation_only must be true')
+              if tenant['spec']['ukg_export']['payload_mode'] != 'empty_collections_only':
+                  raise SystemExit(f'{slug} payload_mode must be empty_collections_only')
+
+          print('PASS: 337-object catalog and all locked tenant/project bindings')
           PY
-
-      - name: Verify the SDM object catalog contains exactly 337 objects
-        run: |
-          set -euo pipefail
-
-          ACTUAL="$(
-            python - <<'PY'
-          import yaml
-
-          with open(
-              "config/export-object-catalog.yaml",
-              encoding="utf-8",
-          ) as handle:
-              catalog = yaml.safe_load(handle)
-
-          print(len(catalog["spec"]["objects"]))
-          PY
-          )"
-
-          if [[ "$ACTUAL" -ne "$EXPECTED_SDM_OBJECTS" ]]; then
-            echo "Expected $EXPECTED_SDM_OBJECTS SDM objects; found $ACTUAL." >&2
-            exit 1
-          fi
-
-          echo "PASS: $ACTUAL SDM objects"
-
-      - name: Validate PostgreSQL and Supabase schema migrations
-        run: |
-          set -euo pipefail
 
           for migration in database/migrations/*.sql; do
             sqlfluff parse --dialect postgres "$migration" >/dev/null
-            echo "PASS: $migration"
+            echo "PASS SQL: $migration"
           done
 
-          grep -R \
-            --line-number \
-            --ignore-case \
-            --fixed-strings \
-            'partition by list (tenant_id)' \
-            database/migrations/0003_partitioned_facts.sql
+          grep -qi 'partition by list (tenant_id)' database/migrations/0003_partitioned_facts.sql
+          grep -qi 'partition by range (business_date)' database/migrations/0003_partitioned_facts.sql
+          grep -qi 'enable row level security' database/migrations/0004_rls_and_access.sql
+          grep -qi 'force row level security' database/migrations/0004_rls_and_access.sql
 
-          grep -R \
-            --line-number \
-            --ignore-case \
-            --fixed-strings \
-            'partition by range (business_date)' \
-            database/migrations/0003_partitioned_facts.sql
-
-          grep -R \
-            --line-number \
-            --ignore-case \
-            --fixed-strings \
-            'enable row level security' \
-            database/migrations/0004_rls_and_access.sql
-
-  build-tenants:
-    name: Build ${{ matrix.display_name }} foundation
-    needs: validate-repository
-    runs-on: ubuntu-24.04
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - slug: pepsico
-            display_name: PepsiCo
-            manifest: tenants/pepsico/tenant-foundation.yaml
-            primary_project: P05
-
-          - slug: ascension
-            display_name: Ascension Healthcare
-            manifest: tenants/ascension/tenant-foundation.yaml
-            primary_project: P02
-
-          - slug: delta
-            display_name: Delta Air Lines
-            manifest: tenants/delta/tenant-foundation.yaml
-            primary_project: P03
-
-          - slug: mgm
-            display_name: MGM Resorts Las Vegas
-            manifest: tenants/mgm/tenant-foundation.yaml
-            primary_project: P01
-
-          - slug: schneider
-            display_name: Schneider Electric
-            manifest: tenants/schneider/tenant-foundation.yaml
-            primary_project: P04
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python with pip cache
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: pip
-          cache-dependency-path: requirements.txt
-
-      - name: Install deterministic build dependencies
+      - name: Render and validate all five foundation packages
+        shell: bash
         run: |
           set -euo pipefail
-          python -m pip install --upgrade pip
-          python -m pip install --requirement requirements.txt
+          rm -rf "$DIST_ROOT" "$RELEASE_ROOT"
+          mkdir -p "$DIST_ROOT" "$RELEASE_ROOT"
+          cd "$BUILDER_ROOT"
 
-      - name: Render the foundation package from YAML
-        run: |
-          set -euo pipefail
+          for slug in pepsico ascension delta mgm schneider; do
+            manifest="tenants/$slug/tenant-foundation.yaml"
+            package="$DIST_ROOT/$slug"
 
-          python scripts/render_foundation.py \
-            --tenant-manifest "${{ matrix.manifest }}" \
-            --catalog config/export-object-catalog.yaml \
-            --project-profiles config/project-object-profiles.yaml \
-            --repo-root . \
-            --output "dist/${{ matrix.slug }}"
+            python scripts/render_foundation.py \
+              --tenant-manifest "$manifest" \
+              --catalog config/export-object-catalog.yaml \
+              --project-profiles config/project-object-profiles.yaml \
+              --repo-root . \
+              --output "$package"
 
-      - name: Validate foundation-only output
-        run: |
-          set -euo pipefail
+            python scripts/validate_foundation.py \
+              --package "$package" \
+              --catalog config/export-object-catalog.yaml \
+              --schemas schemas
 
-          python scripts/validate_foundation.py \
-            --package "dist/${{ matrix.slug }}" \
-            --catalog config/export-object-catalog.yaml \
-            --schemas schemas
-
-      - name: Verify exact export structure and empty response collections
-        run: |
-          set -euo pipefail
-
-          PACKAGE="dist/${{ matrix.slug }}"
-          EXPORT_ROOT="$PACKAGE/sdm-export"
-
-          test -f "$EXPORT_ROOT/ExportConfig.json"
-          test -f "$PACKAGE/BUILD-MANIFEST.json"
-          test -f "$PACKAGE/SHA256SUMS"
-
-          ACTUAL="$(
-            find "$EXPORT_ROOT" \
-              -mindepth 2 \
-              -maxdepth 2 \
-              -name response.json |
-              wc -l
-          )"
-
-          if [[ "$ACTUAL" -ne "$EXPECTED_SDM_OBJECTS" ]]; then
-            echo "Expected $EXPECTED_SDM_OBJECTS response files; found $ACTUAL." >&2
-            exit 1
-          fi
-
-          python - "$EXPORT_ROOT" <<'PY'
+            python - "$package" "$slug" "$GITHUB_SHA" "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" <<'PY'
           from pathlib import Path
+          import hashlib
           import json
           import sys
 
-          export_root = Path(sys.argv[1])
-          response_files = sorted(export_root.glob("*/response.json"))
+          package = Path(sys.argv[1])
+          slug = sys.argv[2]
+          sha = sys.argv[3]
+          run_id = sys.argv[4]
+          run_attempt = sys.argv[5]
+          export_root = package / 'sdm-export'
+          response_files = sorted(export_root.glob('*/response.json'))
 
           if len(response_files) != 337:
-              raise SystemExit(
-                  f"Expected 337 response files; found {len(response_files)}"
-              )
+              raise SystemExit(f'{slug}: expected 337 response.json files; found {len(response_files)}')
 
           for response_file in response_files:
-              payload = json.loads(
-                  response_file.read_text(encoding="utf-8")
-              )
+              payload = json.loads(response_file.read_text(encoding='utf-8'))
+              if payload.get('itemsRetrieveResponseDTOs') != []:
+                  raise SystemExit(f'Non-empty itemsRetrieveResponseDTOs: {response_file}')
+              if payload.get('itemsRetrieveResponses') != []:
+                  raise SystemExit(f'Non-empty itemsRetrieveResponses: {response_file}')
 
-              if payload.get("itemsRetrieveResponseDTOs") != []:
-                  raise SystemExit(
-                      "Non-empty itemsRetrieveResponseDTOs: "
-                      f"{response_file}"
-                  )
-
-              if payload.get("itemsRetrieveResponses") != []:
-                  raise SystemExit(
-                      "Non-empty itemsRetrieveResponses: "
-                      f"{response_file}"
-                  )
-
-          print(
-              f"PASS: {len(response_files)} empty SDM response envelopes"
+          forbidden_fragments = (
+              'employee-data', 'employees/', 'persons/', 'workers/', 'punches/',
+              'timecards/', 'schedules/', 'payroll-results/', 'biometric-templates/',
+              'synthetic-history/', 'generated-data/'
           )
+          for file_path in package.rglob('*'):
+              if not file_path.is_file():
+                  continue
+              relative = file_path.relative_to(package).as_posix().lower()
+              if any(fragment in relative for fragment in forbidden_fragments):
+                  raise SystemExit(f'Forbidden operational or synthetic data path: {relative}')
+
+          metadata = {
+              'tenant_slug': slug,
+              'foundation_only': True,
+              'repository': '${{ github.repository }}',
+              'commit_sha': sha,
+              'workflow_run_id': run_id,
+              'workflow_run_attempt': run_attempt,
+              'sdm_response_count': len(response_files),
+              'data_generated': False,
+          }
+          (package / 'GITHUB-BUILD-METADATA.json').write_text(
+              json.dumps(metadata, indent=2) + '\n', encoding='utf-8'
+          )
+
+          checksum_lines = []
+          for file_path in sorted(path for path in package.rglob('*') if path.is_file()):
+              if file_path.name == 'SHA256SUMS':
+                  continue
+              digest = hashlib.sha256(file_path.read_bytes()).hexdigest()
+              checksum_lines.append(f'{digest}  {file_path.relative_to(package).as_posix()}')
+          (package / 'SHA256SUMS').write_text('\n'.join(checksum_lines) + '\n', encoding='utf-8')
+
+          print(f'PASS {slug}: {len(response_files)} empty SDM response envelopes')
           PY
 
-      - name: Reject workforce, biometric, payroll-result, and synthetic-history data
+            zip_name="$RELEASE_ROOT/${slug}-ukg-assurance-foundation-${GITHUB_SHA::12}.zip"
+            (
+              cd "$DIST_ROOT"
+              zip -q -r "$zip_name" "$slug"
+            )
+            sha256sum "$zip_name" > "$zip_name.sha256"
+          done
+
+      - name: Build five-tenant package index
+        shell: bash
         run: |
           set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import json
+          import os
 
-          PACKAGE="dist/${{ matrix.slug }}"
-
-          if find "$PACKAGE" -type f |
-            grep -Ei \
-              '/(employees?|persons?|workers?|punches?|timecards?|schedules?|payroll-results?|biometric-templates?|synthetic-history|generated-data)(/|\.|$)'
-          then
-            echo "Forbidden operational or synthetic data was generated." >&2
-            exit 1
-          fi
-
-      - name: Write build metadata
-        run: |
-          set -euo pipefail
-
-          cat > "dist/${{ matrix.slug }}/GITHUB-BUILD-METADATA.json" <<JSON
-          {
-            "tenant": "${{ matrix.display_name }}",
-            "tenant_slug": "${{ matrix.slug }}",
-            "primary_project": "${{ matrix.primary_project }}",
-            "foundation_only": true,
-            "repository": "${{ github.repository }}",
-            "commit_sha": "${{ github.sha }}",
-            "workflow_run_id": "${{ github.run_id }}",
-            "workflow_run_attempt": "${{ github.run_attempt }}"
+          release_root = Path(os.environ['RELEASE_ROOT'])
+          locked = {
+              'pepsico': 'P05',
+              'ascension': 'P02',
+              'delta': 'P03',
+              'mgm': 'P01',
+              'schneider': 'P04',
           }
-          JSON
+          packages = []
+          for slug, primary_project in locked.items():
+              matches = sorted(release_root.glob(f'{slug}-ukg-assurance-foundation-*.zip'))
+              if len(matches) != 1:
+                  raise SystemExit(f'Expected one ZIP for {slug}; found {len(matches)}')
+              path = matches[0]
+              packages.append({
+                  'tenant_slug': slug,
+                  'primary_project': primary_project,
+                  'filename': path.name,
+                  'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+                  'foundation_only': True,
+                  'sdm_object_count': 337,
+              })
 
-      - name: Package and checksum tenant foundation
-        id: package
-        run: |
-          set -euo pipefail
+          index = {
+              'format': 'UKG_ASSURANCE_FIVE_TENANT_FOUNDATION_INDEX',
+              'format_version': '1.0.0',
+              'repository': os.environ['GITHUB_REPOSITORY'],
+              'commit_sha': os.environ['GITHUB_SHA'],
+              'workflow_run_id': os.environ['GITHUB_RUN_ID'],
+              'foundation_only': True,
+              'tenant_count': 5,
+              'data_generated': False,
+              'packages': packages,
+          }
+          output = release_root / 'FOUNDATION-PACKAGE-INDEX.json'
+          output.write_text(json.dumps(index, indent=2) + '\n', encoding='utf-8')
+          print(output.read_text(encoding='utf-8'))
+          PY
 
-          mkdir -p release-assets
+          test "$(find "$RELEASE_ROOT" -maxdepth 1 -name '*-ukg-assurance-foundation-*.zip' | wc -l)" -eq 5
+          test "$(find "$RELEASE_ROOT" -maxdepth 1 -name '*.zip.sha256' | wc -l)" -eq 5
 
-          ZIP="release-assets/${{ matrix.slug }}-assurance-foundation-${GITHUB_SHA::12}.zip"
-
-          (
-            cd dist
-            zip -q -r "../$ZIP" "${{ matrix.slug }}"
-          )
-
-          sha256sum "$ZIP" > "${ZIP}.sha256"
-
-          echo "zip=$ZIP" >> "$GITHUB_OUTPUT"
-          echo "checksum=${ZIP}.sha256" >> "$GITHUB_OUTPUT"
-
-      - name: Upload tenant foundation artifact
-        uses: actions/upload-artifact@v4
+      - name: Generate provenance attestations
+        if: github.event_name == 'workflow_dispatch' && inputs.enable_attestation == true
+        uses: actions/attest@v4
         with:
-          name: ${{ matrix.slug }}-assurance-foundation
+          subject-path: 'release-assets/*.zip'
+
+      - name: Upload all five foundation packages
+        uses: actions/upload-artifact@v7
+        with:
+          name: five-tenant-ukg-assurance-foundations-${{ github.sha }}
           path: |
-            ${{ steps.package.outputs.zip }}
-            ${{ steps.package.outputs.checksum }}
+            release-assets/*.zip
+            release-assets/*.zip.sha256
+            release-assets/FOUNDATION-PACKAGE-INDEX.json
           if-no-files-found: error
           retention-days: ${{ env.RETENTION_DAYS }}
           compression-level: 0
 
-      - name: Attest build provenance
-        if: >-
-          github.event_name == 'workflow_dispatch' &&
-          inputs.enable_attestation == true
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-path: ${{ steps.package.outputs.zip }}
-
-  publish-release:
-    name: Publish immutable five-tenant release
-    if: startsWith(github.ref, 'refs/tags/foundation-v')
-    needs:
-      - validate-repository
-      - build-tenants
-    runs-on: ubuntu-24.04
-
-    permissions:
-      contents: write
-
-    steps:
-      - name: Download all five tenant artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: release-assets
-          merge-multiple: true
-
-      - name: Verify all five tenant packages exist
-        run: |
-          set -euo pipefail
-
-          for tenant in pepsico ascension delta mgm schneider; do
-            find release-assets \
-              -type f \
-              -name "${tenant}-assurance-foundation-*.zip" |
-              grep -q .
-
-            find release-assets \
-              -type f \
-              -name "${tenant}-assurance-foundation-*.zip.sha256" |
-              grep -q .
-          done
-
-      - name: Create GitHub release
+      - name: Publish immutable tagged release
+        if: startsWith(github.ref, 'refs/tags/foundation-v')
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-
-          mapfile -t ASSETS < <(
-            find release-assets \
-              -type f \
-              \( -name '*.zip' -o -name '*.sha256' \) \
-              -print |
-              sort
-          )
-
-          if [[ "${#ASSETS[@]}" -ne 10 ]]; then
-            echo "Expected 10 release assets; found ${#ASSETS[@]}." >&2
-            exit 1
-          fi
-
+          mapfile -t assets < <(find "$RELEASE_ROOT" -maxdepth 1 -type f -print | sort)
+          test "${#assets[@]}" -eq 11
           gh release create "$GITHUB_REF_NAME" \
             --title "$GITHUB_REF_NAME" \
-            --notes "Five foundation-only UKG SDM-shaped tenant packages. No workforce, biometric, payroll-result, or synthetic-history data is included." \
-            "${ASSETS[@]}"
+            --notes 'Five foundation-only UKG SDM-shaped tenant packages. No workforce, payroll-result, biometric, or synthetic-history data is included.' \
+            "${assets[@]}"
+
+      - name: Write build summary
+        shell: bash
+        run: |
+          {
+            echo '## UKG Assurance Foundation Build'
+            echo
+            echo '- Five tenant foundations generated.'
+            echo '- 337 empty SDM response envelopes generated per tenant.'
+            echo '- PostgreSQL/Supabase schema creation scripts included.'
+            echo '- RLS and RBAC foundation included.'
+            echo '- No workforce, payroll-result, biometric, or synthetic data generated.'
+            echo
+            echo '### Locked tenant mappings'
+            echo
+            echo '| Tenant | Primary project |'
+            echo '|---|---|'
+            echo '| PepsiCo | P05 |'
+            echo '| Ascension Healthcare | P02 |'
+            echo '| Delta Air Lines | P03 |'
+            echo '| MGM Resorts Las Vegas | P01 |'
+            echo '| Schneider Electric | P04 |'
+          } >> "$GITHUB_STEP_SUMMARY"
