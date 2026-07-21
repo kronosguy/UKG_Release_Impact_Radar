@@ -857,7 +857,20 @@ jobs:
           for file_path in package.rglob('*'):
               if not file_path.is_file():
                   continue
+
               relative = file_path.relative_to(package).as_posix().lower()
+
+              # SDM configuration-object envelopes may contain words such as
+              # "schedule", "person", or "payroll" in their object names.
+              # They are structural configuration files, not workforce data.
+              # Their payload collections were already verified as empty above.
+              is_empty_sdm_envelope = (
+                  relative.startswith('sdm-export/')
+                  and relative.endswith('/response.json')
+              )
+              if is_empty_sdm_envelope:
+                  continue
+
               if any(fragment in relative for fragment in forbidden_fragments):
                   raise SystemExit(f'Forbidden operational or synthetic data path: {relative}')
 
