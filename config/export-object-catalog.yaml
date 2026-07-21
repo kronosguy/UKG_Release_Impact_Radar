@@ -1,0 +1,2709 @@
+apiVersion: kronosguy.com/v1alpha1
+kind: UKGSDMExportObjectCatalog
+metadata:
+  name: ukg-pro-wfm-sdm-export-catalog
+  source_contract: export05-06-2026_190130(3).zip
+  ukg_file_version: '09.08'
+  object_count: 337
+  foundation_only: true
+spec:
+  root_config_output: ExportConfig.json
+  object_directory_pattern: <folder>/response.json
+  payload_policy: empty_collections_only
+  objects:
+  - folder: AccessMethodProfile
+    id: 398
+    name: Access Method Profiles
+    unique_key: AccessMethodProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ACCRUALS
+    id: 370
+    name: Accruals
+    unique_key: ACCRUALS
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: AccuralCodeMappingConfigAPI
+    id: 406
+    name: Accrual Code Mapping
+    unique_key: AccuralCodeMappingConfigAPI
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: AccuralTransactionMappingConfigAPI
+    id: 407
+    name: Accrual Transaction Mapping
+    unique_key: AccuralTransactionMappingConfigAPI
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: AdjustmentDriverSettings
+    id: 358
+    name: Adjustment Drivers
+    unique_key: AdjustmentDriverSettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: AdjustmentRule
+    id: 83
+    name: Adjustment Rules
+    unique_key: AdjustmentRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ALERT_PROFILE
+    id: 270
+    name: Timekeeping Alert Profile
+    unique_key: ALERT_PROFILE
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: APIDefaultNotifications
+    id: 72
+    name: Default Leave Notifications
+    unique_key: APIDefaultNotifications
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: APIHolidayProfile
+    id: 89
+    name: Holiday Profiles
+    unique_key: APIHolidayProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ApplicationConfigurations
+    id: 20015
+    name: Application Configuration
+    unique_key: ApplicationConfigurations
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ApprovalStatus
+    id: 71
+    name: Leave Case Approval Statuses
+    unique_key: ApprovalStatus
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: AssignedStaticDriver
+    id: 322
+    name: Static Drivers Assignments
+    unique_key: AssignedStaticDriver
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ATTENDANCE
+    id: 371
+    name: Attendance
+    unique_key: ATTENDANCE
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: AttendanceCalendarConfiguration
+    id: 258
+    name: Attendance Calendar Configuration
+    unique_key: AttendanceCalendarConfiguration
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: AttendanceProcessorRequest
+    id: 268
+    name: Processor Event Manager
+    unique_key: AttendanceProcessorRequest
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: AttestationAnswer
+    id: 392
+    name: Attestation Answers
+    unique_key: AttestationAnswer
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: AttestationAssignmentsSetup
+    id: 288
+    name: Attestation Assignments
+    unique_key: AttestationAssignmentsSetup
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: AttestationButtonsSetup
+    id: 283
+    name: Attestation Buttons
+    unique_key: AttestationButtonsSetup
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: AttestationConditionsSetup
+    id: 284
+    name: Attestation Conditions
+    unique_key: AttestationConditionsSetup
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: AttestationModelsSetup
+    id: 286
+    name: Attestation Models
+    unique_key: AttestationModelsSetup
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: AttestationProfilesSetup
+    id: 285
+    name: Attestation Profiles
+    unique_key: AttestationProfilesSetup
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: AttestationQuestion
+    id: 394
+    name: Attestation Questions
+    unique_key: AttestationQuestion
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: AttestationTemplateMapping
+    id: 436
+    name: Attestation Template Mappings
+    unique_key: AttestationTemplateMapping
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: AttestationWorkflowsSetup
+    id: 287
+    name: Attestation Workflows
+    unique_key: AttestationWorkflowsSetup
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: AvgPayrateSet
+    id: 360
+    name: Average Pay Rates
+    unique_key: AvgPayrateSet
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: BellsAndGates
+    id: 20014
+    name: BellsAndGates
+    unique_key: BellsAndGates
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: BioConsentForms
+    id: 20040
+    name: Biometric Consent Forms
+    unique_key: BioConsentForms
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: branding_presets
+    id: 279
+    name: Branding
+    unique_key: branding_presets
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: BusinessProcess
+    id: 243
+    name: Business Processes
+    unique_key: BusinessProcess
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: BusinessStructureAttributes
+    id: 409
+    name: Business Structure Attributes
+    unique_key: BusinessStructureAttributes
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: CalendarConfiguration
+    id: 256
+    name: Calendar Configuration
+    unique_key: CalendarConfiguration
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: CalendarProfileAPIFacade
+    id: 35
+    name: Calendar Profiles
+    unique_key: CalendarProfileAPIFacade
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: CardAndReaders
+    id: 20005
+    name: Card And Readers
+    unique_key: CardAndReaders
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: CardFormats
+    id: 20020
+    name: Card Formats
+    unique_key: CardFormats
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: CascadeProfile
+    id: 86
+    name: Cascading Profiles
+    unique_key: CascadeProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: CascadeRule
+    id: 87
+    name: Cascading Policies
+    unique_key: CascadeRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: Certification
+    id: 151
+    name: Certifications
+    unique_key: Certification
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: CombinedEventDef
+    id: 230
+    name: Combined Events
+    unique_key: CombinedEventDef
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: CombinedLaborDistribution
+    id: 328
+    name: Combined Distribution
+    unique_key: CombinedLaborDistribution
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: CommentProfile
+    id: 442
+    name: Comment Profiles
+    unique_key: CommentProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: CommunicationSettings
+    id: 20006
+    name: Communication Settings
+    unique_key: CommunicationSettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ConfigurationProfile
+    id: 20011
+    name: Configuration Profiles
+    unique_key: ConfigurationProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: CONTROL_CENTER_PROFILE
+    id: 237
+    name: Control Center Profile
+    unique_key: CONTROL_CENTER_PROFILE
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: CostCenter
+    id: 276
+    name: Cost Centers
+    unique_key: CostCenter
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: CoverageSettings
+    id: 166
+    name: Coverage Counting
+    unique_key: CoverageSettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: CurrencyPolicy
+    id: 189
+    name: Currency Policy
+    unique_key: CurrencyPolicy
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: CUSTOM_TILE
+    id: 292
+    name: Custom Tiles
+    unique_key: CUSTOM_TILE
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: DATA_VIEW_PROFILES
+    id: 254
+    name: Data View Profiles
+    unique_key: DATA_VIEW_PROFILES
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: DATA_VIEWS
+    id: 253
+    name: Data Views
+    unique_key: DATA_VIEWS
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: DataAccessGroup
+    id: 11
+    name: Generic Data Access Profiles
+    unique_key: DataAccessGroup
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: DayTypeEquivalenceValues
+    id: 64
+    name: Day Type Equivalence Values
+    unique_key: DayTypeEquivalenceValues
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: DayTypeRule
+    id: 133
+    name: Day Type Rules
+    unique_key: DayTypeRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: DayTypeRuleSet
+    id: 134
+    name: Day Type Rule Sets
+    unique_key: DayTypeRuleSet
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: DefaultTransactions
+    id: 20018
+    name: Default Transactions
+    unique_key: DefaultTransactions
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: DeviceGroups
+    id: 20002
+    name: Device Groups
+    unique_key: DeviceGroups
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: Devices
+    id: 20001
+    name: Devices
+    unique_key: Devices
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: DeviceTags
+    id: 20003
+    name: Device Tags
+    unique_key: DeviceTags
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: Document
+    id: 79
+    name: Documents
+    unique_key: Document
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: DocumentStatus
+    id: 73
+    name: Document Statuses
+    unique_key: DocumentStatus
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: DomainEvent
+    id: 337
+    name: Domain Event
+    unique_key: DomainEvent
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: DomainEventCategory
+    id: 336
+    name: Domain Event Category
+    unique_key: DomainEventCategory
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: DomainEventNavigation
+    id: 343
+    name: Domain Event Navigation
+    unique_key: DomainEventNavigation
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: DomainEventNotification
+    id: 45
+    name: Control Center Notification Mapping
+    unique_key: DomainEventNotification
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: DownloadOptions
+    id: 20009
+    name: Download Options
+    unique_key: DownloadOptions
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: EligibilityRequirement
+    id: 76
+    name: Eligibility Requirements
+    unique_key: EligibilityRequirement
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: EMPLOYEE
+    id: 372
+    name: Employee
+    unique_key: EMPLOYEE
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: EmployeeGlanceSetting
+    id: 390
+    name: Employee Glance Settings
+    unique_key: EmployeeGlanceSetting
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: EmployeeGroup
+    id: 281
+    name: Employee Group
+    unique_key: EmployeeGroup
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: EmployeeRuleSet
+    id: 141
+    name: Employee Rule Set
+    unique_key: EmployeeRuleSet
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: EmployeeVisibilityPeriods
+    id: 400
+    name: Employee Visibility Periods
+    unique_key: EmployeeVisibilityPeriods
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: EmploymentTerm
+    id: 68
+    name: Employment Terms
+    unique_key: EmploymentTerm
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ExceptionCategories
+    id: 383
+    name: Exception Categories
+    unique_key: ExceptionCategories
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ExceptionTiles
+    id: 384
+    name: Exception Tiles
+    unique_key: ExceptionTiles
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: FactorDeactivation
+    id: 416
+    name: Factor Deactivation
+    unique_key: FactorDeactivation
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ForecastCategoryProperty
+    id: 301
+    name: Category Property Sets
+    unique_key: ForecastCategoryProperty
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ForecastCategoryPropertyAssignment
+    id: 302
+    name: Category Property Set Assignments
+    unique_key: ForecastCategoryPropertyAssignment
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ForecastEvent
+    id: 307
+    name: Special Events Assignments
+    unique_key: ForecastEvent
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ForecastEventType
+    id: 308
+    name: Special Events
+    unique_key: ForecastEventType
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ForecastMapDataAccessProfile
+    id: 325
+    name: Forecasting Category Profiles
+    unique_key: ForecastMapDataAccessProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ForecastPlannerProfile
+    id: 315
+    name: Forecast Profile
+    unique_key: ForecastPlannerProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ForecastPlannerSettings
+    id: 314
+    name: Forecast Planner
+    unique_key: ForecastPlannerSettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ForecastVolumeDriverAssignment
+    id: 305
+    name: Volume Drivers Assignments
+    unique_key: ForecastVolumeDriverAssignment
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: FormulaActivation
+    id: 295
+    name: Formula Deactivation
+    unique_key: FormulaActivation
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: FPARule
+    id: 84
+    name: Percent Allocation Rules
+    unique_key: FPARule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: GeneralLedgerMappingConfigAPI
+    id: 408
+    name: General Ledger Mapping
+    unique_key: GeneralLedgerMappingConfigAPI
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: GeneralSettings
+    id: 20007
+    name: General Settings
+    unique_key: GeneralSettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: GenericBadgeFormats
+    id: 20019
+    name: Generic Badge Formats
+    unique_key: GenericBadgeFormats
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: GenericNotification
+    id: 201
+    name: Workflow Notifications
+    unique_key: GenericNotification
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: GroupedTask
+    id: 324
+    name: Tasks
+    unique_key: GroupedTask
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: GroupedTaskGroup
+    id: 319
+    name: Task Groups By Generic Department
+    unique_key: GroupedTaskGroup
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: HalfDayPCEBoundary
+    id: 58
+    name: Half Day Pay Code Edit Boundaries
+    unique_key: HalfDayPCEBoundary
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: HalfDayRule
+    id: 59
+    name: Half Day Rules
+    unique_key: HalfDayRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: HalfDayShiftBoundary
+    id: 57
+    name: Half Day Shift Boundaries
+    unique_key: HalfDayShiftBoundary
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: HCMPayrollConfigAPI
+    id: 341
+    name: Payroll Configuration
+    unique_key: HCMPayrollConfigAPI
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: HolidayRequestSetting
+    id: 203
+    name: Holiday and Unscheduled Day Request Settings
+    unique_key: HolidayRequestSetting
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: HOME_PAGES
+    id: 264
+    name: Home Pages
+    unique_key: HOME_PAGES
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: HoursCategory
+    id: 179
+    name: Hours Categories
+    unique_key: HoursCategory
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: HoursCategorySet
+    id: 180
+    name: Hours Category Sets
+    unique_key: HoursCategorySet
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: HoursOfOperation
+    id: 310
+    name: Hours of Operation
+    unique_key: HoursOfOperation
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: HoursOfOperationAssignment
+    id: 311
+    name: Hours of Operation Assignments
+    unique_key: HoursOfOperationAssignment
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: HyperFindProfile
+    id: 42
+    name: Hyperfind Profiles
+    unique_key: HyperFindProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: HyperFindQueryImport
+    id: 43
+    name: Hyperfinds
+    unique_key: HyperFindQueryImport
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: IA_ENTITY_DEFINITION
+    id: 332
+    name: Entity Definitions
+    unique_key: IA_ENTITY_DEFINITION
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: IhubListParameter
+    id: 289
+    name: Integration List Parameters
+    unique_key: IhubListParameter
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: INCENTIVE_DEFINITION
+    id: 424
+    name: Incentive Definition
+    unique_key: INCENTIVE_DEFINITION
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: INCENTIVE_PROFILE
+    id: 425
+    name: Incentive Profile
+    unique_key: INCENTIVE_PROFILE
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: Indicator
+    id: 177
+    name: Indicators
+    unique_key: Indicator
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: IndividualApplicationConfigurations
+    id: 20024
+    name: Application Configuration
+    unique_key: IndividualApplicationConfigurations
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: IndividualConfigurationProfile
+    id: 20023
+    name: Configuration Profiles
+    unique_key: IndividualConfigurationProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: IndividualSoftKeySettings
+    id: 20025
+    name: Softkey Settings
+    unique_key: IndividualSoftKeySettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: IndividualTransactionSettings
+    id: 20026
+    name: Transaction Settings
+    unique_key: IndividualTransactionSettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: integration_migrate
+    id: 226
+    name: Install Integrations
+    unique_key: integration_migrate
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: JobGroup
+    id: 267
+    name: Job Groups
+    unique_key: JobGroup
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: jobs
+    id: 249
+    name: Jobs
+    unique_key: jobs
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: KioskConfiguration
+    id: 391
+    name: Kiosk Configurations
+    unique_key: KioskConfiguration
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: KioskInstance
+    id: 393
+    name: Kiosk Instances
+    unique_key: KioskInstance
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: KnownIPAddress
+    id: 380
+    name: Known IP Address
+    unique_key: KnownIPAddress
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: KnownPlace
+    id: 44
+    name: Known Places
+    unique_key: KnownPlace
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: KPIF_KPI_DEFINITION
+    id: 241
+    name: KPI Definition
+    unique_key: KPIF_KPI_DEFINITION
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: KPIF_MAPPING_CATEGORY_DEFINITION
+    id: 239
+    name: Mapping Category Definition
+    unique_key: KPIF_MAPPING_CATEGORY_DEFINITION
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: KPIF_METRIC_DEFINITION
+    id: 240
+    name: Metric Definition
+    unique_key: KPIF_METRIC_DEFINITION
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: KPIF_TARGET_MANAGEMENT
+    id: 340
+    name: Target Management
+    unique_key: KPIF_TARGET_MANAGEMENT
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: KTimeZone
+    id: 188
+    name: Time Zones
+    unique_key: KTimeZone
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LaborCategory
+    id: 272
+    name: Labor Categories
+    unique_key: LaborCategory
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LaborCategoryEntry
+    id: 273
+    name: Labor Category Entries
+    unique_key: LaborCategoryEntry
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LaborCategoryEntryList
+    id: 274
+    name: Labor Category Entry Lists
+    unique_key: LaborCategoryEntryList
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LaborCategoryProfile
+    id: 275
+    name: Labor Category Profiles
+    unique_key: LaborCategoryProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LaborConstraintProfile
+    id: 356
+    name: Labor Constraint Profiles
+    unique_key: LaborConstraintProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LaborConstraintSettings
+    id: 344
+    name: Labor Constraints
+    unique_key: LaborConstraintSettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LaborDistributionGroupProfiles
+    id: 429
+    name: Labor Distribution Group Profiles
+    unique_key: LaborDistributionGroupProfiles
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LaborDistributionGroups
+    id: 428
+    name: Labor Distribution Groups
+    unique_key: LaborDistributionGroups
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LaborForecastLimit
+    id: 330
+    name: Labor Forecast Limits
+    unique_key: LaborForecastLimit
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LaborStandardGroup
+    id: 317
+    name: Labor Standards
+    unique_key: LaborStandardGroup
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: Languages
+    id: 20013
+    name: Languages
+    unique_key: Languages
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LEAVE
+    id: 373
+    name: Leave
+    unique_key: LEAVE
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LeaveCalendarConfiguration
+    id: 260
+    name: Leave Calendar Configuration
+    unique_key: LeaveCalendarConfiguration
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LeaveCategory
+    id: 80
+    name: Leave Categories
+    unique_key: LeaveCategory
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LeaveProfile
+    id: 74
+    name: Leave Profiles
+    unique_key: LeaveProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LeaveReason
+    id: 77
+    name: Leave Reasons
+    unique_key: LeaveReason
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LeaveReminderTemplates
+    id: 280
+    name: Reminder Template
+    unique_key: LeaveReminderTemplates
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LeaveRule
+    id: 75
+    name: Leave Rules
+    unique_key: LeaveRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LeaveType
+    id: 78
+    name: Leave Types
+    unique_key: LeaveType
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LICENSE
+    id: 374
+    name: License
+    unique_key: LICENSE
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LinkedForecastCategory
+    id: 329
+    name: Linked Categories
+    unique_key: LinkedForecastCategory
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LocalePolicy
+    id: 190
+    name: Locale Policy
+    unique_key: LocalePolicy
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LocationProfileSettings
+    id: 168
+    name: Location Profiles
+    unique_key: LocationProfileSettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LocationRuleSet
+    id: 334
+    name: Location Rule Sets
+    unique_key: LocationRuleSet
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LocationRuleSetAssignments
+    id: 335
+    name: Location Rule Sets Assignments
+    unique_key: LocationRuleSetAssignments
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LocationSet
+    id: 266
+    name: Organizational Sets
+    unique_key: LocationSet
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: locationTypes
+    id: 248
+    name: Type
+    unique_key: locationTypes
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: LostTimeEventDef
+    id: 231
+    name: Lost Time Events
+    unique_key: LostTimeEventDef
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: MachineLearning
+    id: 316
+    name: Machine Learning
+    unique_key: MachineLearning
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ManagerTile
+    id: 265
+    name: Manager Tile
+    unique_key: ManagerTile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: MetricsSettings
+    id: 178
+    name: Metrics
+    unique_key: MetricsSettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: MinorRule
+    id: 160
+    name: Minor Rule Sets
+    unique_key: MinorRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: MusterRollLeaveCodes
+    id: 382
+    name: Muster Roll Leave Codes
+    unique_key: MusterRollLeaveCodes
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: NotificationProfile
+    id: 187
+    name: Notification Profile
+    unique_key: NotificationProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: OccurrenceDefinition
+    id: 386
+    name: Occurrence Definition
+    unique_key: OccurrenceDefinition
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: OnlineTransferSmartView
+    id: 20035
+    name: Online Transfers
+    unique_key: OnlineTransferSmartView
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: OperationalMetrics
+    id: 331
+    name: Operational Dashboard Metrics and KPIs
+    unique_key: OperationalMetrics
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: OverrideHoursOfOperation
+    id: 312
+    name: Override Hours of Operation
+    unique_key: OverrideHoursOfOperation
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: OverrideHoursOfOperationAssignment
+    id: 313
+    name: Override Hours of Operation Assignments
+    unique_key: OverrideHoursOfOperationAssignment
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: PartialShiftCriteria
+    id: 412
+    name: Partial Shift Criteria
+    unique_key: PartialShiftCriteria
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: Pattern
+    id: 232
+    name: Attendance Patterns
+    unique_key: Pattern
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: PaycodePayrollCodeConfigAPI
+    id: 342
+    name: Payroll Code Mapping
+    unique_key: PaycodePayrollCodeConfigAPI
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: PayCodeValuesProfile
+    id: 65
+    name: Pay Code Values Profiles
+    unique_key: PayCodeValuesProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: PerfectAttendanceDef
+    id: 229
+    name: Perfect Attendance Definitions
+    unique_key: PerfectAttendanceDef
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: PeriodDefinition
+    id: 367
+    name: Period Definition
+    unique_key: PeriodDefinition
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: PointType
+    id: 235
+    name: Balance Types
+    unique_key: PointType
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: PolicyAction
+    id: 227
+    name: Attendance Actions
+    unique_key: PolicyAction
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: PREDICTIVE_SCHEDULING_BONUSES
+    id: 348
+    name: Predictive Scheduling Bonuses
+    unique_key: PREDICTIVE_SCHEDULING_BONUSES
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: PREDICTIVE_SCHEDULING_RULES
+    id: 355
+    name: Predictive Scheduling Rules
+    unique_key: PREDICTIVE_SCHEDULING_RULES
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ProcedureSet
+    id: 173
+    name: Procedure Sets
+    unique_key: ProcedureSet
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ProcessModel
+    id: 242
+    name: Process Models
+    unique_key: ProcessModel
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ProcessProfile
+    id: 244
+    name: Process Profiles
+    unique_key: ProcessProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ProficiencyLevel
+    id: 130
+    name: Proficiency Levels
+    unique_key: ProficiencyLevel
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: published_report
+    id: 199
+    name: Report
+    unique_key: published_report
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: QR_CODES
+    id: 431
+    name: QR Codes
+    unique_key: QR_CODES
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: RBSRule
+    id: 107
+    name: Rest Between Shifts
+    unique_key: RBSRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: reportdo
+    id: 200
+    name: Report Data Object
+    unique_key: reportdo
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: RequestApprovalSettings
+    id: 62
+    name: Approval Setting
+    unique_key: RequestApprovalSettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: RequestApprovalStepSettings
+    id: 63
+    name: Approval Step Setting
+    unique_key: RequestApprovalStepSettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: RequestEmployeePriority
+    id: 294
+    name: Request Submission by Employee Priority
+    unique_key: RequestEmployeePriority
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: RequestReviewerList
+    id: 46
+    name: Reviewer Lists
+    unique_key: RequestReviewerList
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: RequestReviewerPurpose
+    id: 47
+    name: Symbolic Purpose [Formerly Reviewer Purpose]
+    unique_key: RequestReviewerPurpose
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: RequestSubtype
+    id: 66
+    name: Request Subtypes
+    unique_key: RequestSubtype
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: RoleProfileKBO
+    id: 50
+    name: Role Profiles
+    unique_key: RoleProfileKBO
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SchedGenSettings
+    id: 167
+    name: Schedule Generation Strategy
+    unique_key: SchedGenSettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SchedRule
+    id: 171
+    name: Rules
+    unique_key: SchedRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SchedRuleSet
+    id: 172
+    name: Rule Sets
+    unique_key: SchedRuleSet
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SCHEDULE_CHANGE_CRITERIA
+    id: 347
+    name: Schedule Change Criteria
+    unique_key: SCHEDULE_CHANGE_CRITERIA
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SCHEDULE_EVENT
+    id: 402
+    name: Schedule Event
+    unique_key: SCHEDULE_EVENT
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SCHEDULE_EVENT_RULE
+    id: 404
+    name: Schedule Event Rule
+    unique_key: SCHEDULE_EVENT_RULE
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ScheduleGroup
+    id: 269
+    name: Groups
+    unique_key: ScheduleGroup
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SchedulePatternTemplate
+    id: 257
+    name: Pattern Templates
+    unique_key: SchedulePatternTemplate
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SchedulePeriod
+    id: 146
+    name: Schedule Periods
+    unique_key: SchedulePeriod
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SchedulePlanner
+    id: 262
+    name: Schedule Planner
+    unique_key: SchedulePlanner
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SchedulePlannerProfile
+    id: 263
+    name: Schedule Planner Profile
+    unique_key: SchedulePlannerProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ScheduleScoreDefinition
+    id: 417
+    name: Schedule Score Definition
+    unique_key: ScheduleScoreDefinition
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ScheduleZoneSet
+    id: 155
+    name: Schedule Zone Set
+    unique_key: ScheduleZoneSet
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SCHEDULING
+    id: 375
+    name: Scheduling
+    unique_key: SCHEDULING
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SchoolCalendar
+    id: 161
+    name: School Calendars
+    unique_key: SchoolCalendar
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: sequence_migrate
+    id: 255
+    name: Integration Sets
+    unique_key: sequence_migrate
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ShiftBuilderCriteria
+    id: 259
+    name: Shift Builder Criteria
+    unique_key: ShiftBuilderCriteria
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ShiftProfile
+    id: 175
+    name: Shift Profiles
+    unique_key: ShiftProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ShiftProfileSet
+    id: 174
+    name: Shift Profile Sets
+    unique_key: ShiftProfileSet
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ShiftSetAssignment
+    id: 297
+    name: Workload Shift Sets Assignment
+    unique_key: ShiftSetAssignment
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ShiftTemplate
+    id: 147
+    name: Shift Templates
+    unique_key: ShiftTemplate
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: Skill
+    id: 150
+    name: Skills
+    unique_key: Skill
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SkillAndCertificationProfile
+    id: 345
+    name: Skill & Certification Profiles
+    unique_key: SkillAndCertificationProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SmartViews
+    id: 20016
+    name: Smart Views
+    unique_key: SmartViews
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SoftKeySchedules
+    id: 20004
+    name: Soft Key Schedules
+    unique_key: SoftKeySchedules
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SoftKeySettings
+    id: 20017
+    name: Soft Key Settings
+    unique_key: SoftKeySettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: STAFFING_DASHBOARD
+    id: 377
+    name: Staffing Dashboard
+    unique_key: STAFFING_DASHBOARD
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: STAFFING_PROFILE
+    id: 378
+    name: Staffing Profile
+    unique_key: STAFFING_PROFILE
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: StandardShiftSet
+    id: 156
+    name: Workload Shift Sets
+    unique_key: StandardShiftSet
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: StartDayOfWeek
+    id: 327
+    name: Forecast Week Start Day
+    unique_key: StartDayOfWeek
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: StaticDriver
+    id: 321
+    name: Static Drivers
+    unique_key: StaticDriver
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SwapRecommendationsSettings
+    id: 293
+    name: Swap Recommendation Settings
+    unique_key: SwapRecommendationsSettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SystemSettingsAttendance
+    id: 205
+    name: Attendance
+    unique_key: SystemSettingsAttendance
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SystemSettingsBusinessAutomation
+    id: 223
+    name: Business Automation
+    unique_key: SystemSettingsBusinessAutomation
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SystemSettingsBusinessStructure
+    id: 298
+    name: Business Structure
+    unique_key: SystemSettingsBusinessStructure
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SystemSettingsDisplay
+    id: 213
+    name: Display
+    unique_key: SystemSettingsDisplay
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SystemSettingsEmailSettings
+    id: 209
+    name: E-mail
+    unique_key: SystemSettingsEmailSettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SystemSettingsEngineController
+    id: 216
+    name: Engine Controller
+    unique_key: SystemSettingsEngineController
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SystemSettingsGlobalVALUES
+    id: 211
+    name: Global Values
+    unique_key: SystemSettingsGlobalVALUES
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SystemSettingsHealthcareAnalytics
+    id: 435
+    name: Healthcare Productivity
+    unique_key: SystemSettingsHealthcareAnalytics
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SystemSettingsLeave
+    id: 206
+    name: Leave
+    unique_key: SystemSettingsLeave
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SystemSettingsMobileApp
+    id: 432
+    name: Mobile App
+    unique_key: SystemSettingsMobileApp
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SystemSettingsScheduleGenerator
+    id: 220
+    name: Schedule Generator
+    unique_key: SystemSettingsScheduleGenerator
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SystemSettingsScheduling
+    id: 207
+    name: Scheduling
+    unique_key: SystemSettingsScheduling
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SystemSettingsService
+    id: 212
+    name: Service
+    unique_key: SystemSettingsService
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SystemSettingsTimekeeping
+    id: 222
+    name: Timekeeping
+    unique_key: SystemSettingsTimekeeping
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: SystemSettingsWorkload
+    id: 221
+    name: Workload
+    unique_key: SystemSettingsWorkload
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TagDefinition
+    id: 271
+    name: Tag Definitions
+    unique_key: TagDefinition
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TaskGroup
+    id: 439
+    name: Task Groups
+    unique_key: TaskGroup
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TeleTimeIPAutoTransfer
+    id: 20037
+    name: TeleTime IP Auto Transfers
+    unique_key: TeleTimeIPAutoTransfer
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TeleTimeIPAutoTransferGroup
+    id: 20036
+    name: TeleTime IP Auto Transfer Groups
+    unique_key: TeleTimeIPAutoTransferGroup
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TeleTimeIPCallMenu
+    id: 20029
+    name: TeleTime IP Call Menus
+    unique_key: TeleTimeIPCallMenu
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TeleTimeIPCallMenuRestriction
+    id: 20030
+    name: TeleTime IP Call Menu Restrictions
+    unique_key: TeleTimeIPCallMenuRestriction
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TeleTimeIPDownloadValidationOption
+    id: 20034
+    name: TeleTime IP Download Options
+    unique_key: TeleTimeIPDownloadValidationOption
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TeleTimeIPExtensionGroup
+    id: 20031
+    name: TeleTime IP Extension Groups
+    unique_key: TeleTimeIPExtensionGroup
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TeleTimeIPJobIvrAlias
+    id: 20033
+    name: TeleTime IP Job IVR Aliases
+    unique_key: TeleTimeIPJobIvrAlias
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TeleTimeIpServer
+    id: 20028
+    name: TeleTime IP Servers
+    unique_key: TeleTimeIpServer
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TeleTimeIPTransferAliasProfiles
+    id: 20039
+    name: TeleTime IP Transfer Alias Profiles
+    unique_key: TeleTimeIPTransferAliasProfiles
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TeleTimeIPTransferDefinition
+    id: 20038
+    name: TeleTime IP Transfer Definitions
+    unique_key: TeleTimeIPTransferDefinition
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TeleTimeIPUserProfile
+    id: 20032
+    name: TeleTime IP User Profiles
+    unique_key: TeleTimeIPUserProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: Template
+    id: 245
+    name: Document Templates
+    unique_key: Template
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TimecardAddonProfile
+    id: 387
+    name: Timecard Add-on Profiles
+    unique_key: TimecardAddonProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TimecardSettings
+    id: 278
+    name: Timecard Settings
+    unique_key: TimecardSettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TIMEKEEPING
+    id: 376
+    name: Timekeeping
+    unique_key: TIMEKEEPING
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TimeOffRule
+    id: 69
+    name: Time-Off Rules
+    unique_key: TimeOffRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TimeSheetItemTag
+    id: 401
+    name: Pay Code Tag
+    unique_key: TimeSheetItemTag
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TotalDefinitions
+    id: 20010
+    name: Total Definitions
+    unique_key: TotalDefinitions
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TransactionSettings
+    id: 20008
+    name: Transaction Settings
+    unique_key: TransactionSettings
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TRANSFER_DISPLAY_PROFILES
+    id: 388
+    name: Transfer Display Profiles
+    unique_key: TRANSFER_DISPLAY_PROFILES
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TransferRules
+    id: 385
+    name: Transfer Rules
+    unique_key: TransferRules
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TransitionAssignment
+    id: 60
+    name: Request Subtype Transitions
+    unique_key: TransitionAssignment
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: TrustedServers
+    id: 20021
+    name: Trusted Servers
+    unique_key: TrustedServers
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: UserDefinedDriver
+    id: 323
+    name: Custom Drivers
+    unique_key: UserDefinedDriver
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: VisibilityPeriodActions
+    id: 433
+    name: Visibility Period Actions
+    unique_key: VisibilityPeriodActions
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: VolumeDriver
+    id: 304
+    name: Volume Drivers
+    unique_key: VolumeDriver
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WatAttendanceEvent
+    id: 233
+    name: Attendance Events
+    unique_key: WatAttendanceEvent
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WatDiscipline
+    id: 234
+    name: Discipline Levels
+    unique_key: WatDiscipline
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WATPolicy
+    id: 33
+    name: Attendance Policies
+    unique_key: WATPolicy
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WATProfile
+    id: 32
+    name: Attendance Profiles
+    unique_key: WATProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WatTrackingPrd
+    id: 228
+    name: Tracking Periods
+    unique_key: WatTrackingPrd
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WebServiceConfiguration
+    id: 125
+    name: Web Service Configuration
+    unique_key: WebServiceConfiguration
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WFLCustomData
+    id: 81
+    name: Configurable Fields
+    unique_key: WFLCustomData
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WIFI_ACCESS_POINTS
+    id: 396
+    name: WiFi Access Points
+    unique_key: WIFI_ACCESS_POINTS
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WIFI_NETWORK
+    id: 395
+    name: WiFi Networks
+    unique_key: WIFI_NETWORK
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WLGAcuitySet
+    id: 183
+    name: Weight Sets
+    unique_key: WLGAcuitySet
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WLGStaffingMatrix
+    id: 182
+    name: Staffing Matrix
+    unique_key: WLGStaffingMatrix
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WORK
+    id: 397
+    name: Activities
+    unique_key: WORK
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WorkerType
+    id: 49
+    name: Worker Types
+    unique_key: WorkerType
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WorkloadPlanner
+    id: 157
+    name: Workload Planners
+    unique_key: WorkloadPlanner
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WorkloadPlannerProfile
+    id: 158
+    name: Workload Planner Profiles
+    unique_key: WorkloadPlannerProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WorkRuleDefinitions
+    id: 20012
+    name: Work Rule definitions
+    unique_key: WorkRuleDefinitions
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WorkWeek
+    id: 137
+    name: Work Week
+    unique_key: WorkWeek
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WorkWeekAssignments
+    id: 136
+    name: Work Week Assignments
+    unique_key: WorkWeekAssignments
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAAccrualPolicy
+    id: 22
+    name: Accrual Policies
+    unique_key: WSAAccrualPolicy
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAAccrualProfile
+    id: 21
+    name: Accrual Profiles
+    unique_key: WSAAccrualProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAAPICombinationRule
+    id: 103
+    name: Combination Rules
+    unique_key: WSAAPICombinationRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAApprovalRestrictions
+    id: 379
+    name: Approval Restrictions
+    unique_key: WSAApprovalRestrictions
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAAutoResolveException
+    id: 333
+    name: Auto-Resolved Exceptions
+    unique_key: WSAAutoResolveException
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSABalanceCascade
+    id: 30
+    name: Balance Cascades
+    unique_key: WSABalanceCascade
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSABalanceCascadeGroup
+    id: 29
+    name: Balance Cascade Groups
+    unique_key: WSABalanceCascadeGroup
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSABonusDeductRule
+    id: 110
+    name: Bonuses / Deductions
+    unique_key: WSABonusDeductRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSABreakRule
+    id: 112
+    name: Breaks
+    unique_key: WSABreakRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSACallInRule
+    id: 109
+    name: Call-Ins
+    unique_key: WSACallInRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSACfgAccrualCode
+    id: 28
+    name: Accrual Codes
+    unique_key: WSACfgAccrualCode
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSACfgContactTypeList
+    id: 54
+    name: Telephone Field Labels
+    unique_key: WSACfgContactTypeList
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSACfgCustomDataList
+    id: 53
+    name: Custom Field Labels
+    unique_key: WSACfgCustomDataList
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSACFGPaycodeDistribution
+    id: 102
+    name: Pay Code Distributions
+    unique_key: WSACFGPaycodeDistribution
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSACombinedPayCodeRule
+    id: 121
+    name: Combined Pay Codes
+    unique_key: WSACombinedPayCodeRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAComment
+    id: 48
+    name: Comments
+    unique_key: WSAComment
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAContributingPayCodeRule
+    id: 120
+    name: Contributing Pay Codes
+    unique_key: WSAContributingPayCodeRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAContributingShiftRule
+    id: 98
+    name: Contributing Shifts
+    unique_key: WSAContributingShiftRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSACoreHoursRule
+    id: 113
+    name: Core Hours
+    unique_key: WSACoreHoursRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSACustomDate
+    id: 27
+    name: Dates
+    unique_key: WSACustomDate
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSADatePattern
+    id: 26
+    name: Date Patterns
+    unique_key: WSADatePattern
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSADisplayOrder
+    id: 119
+    name: Display Order
+    unique_key: WSADisplayOrder
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSADP_DISPLAYPROFILES
+    id: 197
+    name: Display Profiles
+    unique_key: WSADP_DISPLAYPROFILES
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSADP_PEOPLESETTINGPROFILES
+    id: 251
+    name: People Information Settings
+    unique_key: WSADP_PEOPLESETTINGPROFILES
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSADP_PERSONINFORMATIONPROFILES
+    id: 250
+    name: People Information Profiles
+    unique_key: WSADP_PERSONINFORMATIONPROFILES
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAExceptionRule
+    id: 114
+    name: Exceptions
+    unique_key: WSAExceptionRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAFixedRule
+    id: 94
+    name: Fixed Rules
+    unique_key: WSAFixedRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAFunctionAccessProfile
+    id: 10
+    name: Function Access Profiles
+    unique_key: WSAFunctionAccessProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAGrant
+    id: 23
+    name: Grants
+    unique_key: WSAGrant
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAHoliday
+    id: 99
+    name: Holidays
+    unique_key: WSAHoliday
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAHolidayCreditRule
+    id: 95
+    name: Holiday Credit Rules
+    unique_key: WSAHolidayCreditRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAIntervalRoundRule
+    id: 117
+    name: Interval Round Rules
+    unique_key: WSAIntervalRoundRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSALimit
+    id: 24
+    name: Limits
+    unique_key: WSALimit
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSALogonProfile
+    id: 224
+    name: Logon Profiles
+    unique_key: WSALogonProfile
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAMajorityRule
+    id: 104
+    name: Majorities
+    unique_key: WSAMajorityRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAOvertimeRule
+    id: 106
+    name: Overtimes
+    unique_key: WSAOvertimeRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAPatternTemplateDAP
+    id: 15
+    name: Pattern Templates
+    unique_key: WSAPatternTemplateDAP
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAPayCode
+    id: 122
+    name: Pay Code Definition
+    unique_key: WSAPayCode
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAPayCodeDAP
+    id: 19
+    name: Pay Codes
+    unique_key: WSAPayCodeDAP
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAPayRule
+    id: 88
+    name: Pay Rules
+    unique_key: WSAPayRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAProbationPeriod
+    id: 25
+    name: Probation Periods
+    unique_key: WSAProbationPeriod
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAProcessingOrderRule
+    id: 93
+    name: Processing Order
+    unique_key: WSAProcessingOrderRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAPunchRoundRule
+    id: 116
+    name: Punch Round Rules
+    unique_key: WSAPunchRoundRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAREPORTS
+    id: 17
+    name: Report Profile
+    unique_key: WSAREPORTS
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAScheduleDeviationRule
+    id: 108
+    name: Schedule Deviations
+    unique_key: WSAScheduleDeviationRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAScheduledHoursType
+    id: 123
+    name: Scheduled Hours Type
+    unique_key: WSAScheduledHoursType
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAScheduleGroupDAP
+    id: 14
+    name: Schedule Groups
+    unique_key: WSAScheduleGroupDAP
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAShiftGuarantee
+    id: 115
+    name: Shift Guarantees
+    unique_key: WSAShiftGuarantee
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAShiftTemplateDAP
+    id: 16
+    name: Shift Templates
+    unique_key: WSAShiftTemplateDAP
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSASignOffRestriction
+    id: 91
+    name: Sign-Off Restrictions
+    unique_key: WSASignOffRestriction
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSATkTerminalRule
+    id: 92
+    name: Punch Interpretation Rules
+    unique_key: WSATkTerminalRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAWorkHistoryQualifierRule
+    id: 97
+    name: Work History Qualifiers
+    unique_key: WSAWorkHistoryQualifierRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAWorkRule
+    id: 100
+    name: Work Rules
+    unique_key: WSAWorkRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAWorkRuleDAP
+    id: 18
+    name: Work Rules
+    unique_key: WSAWorkRuleDAP
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: WSAZoneRule
+    id: 105
+    name: Zones
+    unique_key: WSAZoneRule
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ZoneCategory
+    id: 131
+    name: Zone Categories
+    unique_key: ZoneCategory
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []
+  - folder: ZoneSetAssignment
+    id: 296
+    name: Schedule Zone Set Assignment
+    unique_key: ZoneSetAssignment
+    output_file: response.json
+    foundation_payload:
+      itemsRetrieveResponseDTOs: []
+      itemsRetrieveResponses: []

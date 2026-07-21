@@ -1,0 +1,81 @@
+apiVersion: kronosguy.com/v1
+kind: UKGAssuranceTenantGenerator
+metadata:
+  name: delta
+  display_name: Delta Air Lines
+  tenant_key: delta
+  tenant_uuid: 10000000-0000-4000-8000-000000000003
+  package_slug: delta
+spec:
+  project_binding:
+    primary_project: P03
+    supporting_projects:
+    - P01
+    - P02
+    - P04
+    - P05
+    binding_mode: locked
+  generator:
+    enabled: true
+    synthetic_only: true
+    minimum_year: 2016
+    maximum_year: 2026
+    portfolio_employee_count: 1200
+    portfolio_site_count: 8
+    tenant_specific_stream: crew_duties
+  hierarchy:
+    levels:
+    - enterprise
+    - operating_division
+    - workforce_domain
+    - region
+    - crew_base_or_airport
+    - department
+    - workgroup
+    seed_sites:
+    - ATL
+    - MSP
+    - DTW
+    - SLC
+    - LAX
+    - JFK
+    - SEA
+    - BOS
+  roles:
+  - code: PILOT
+    weight: 0.22
+    shift_hours: 9
+    qualification: FAA_DUTY_ELIGIBLE
+  - code: FLIGHT_ATTENDANT
+    weight: 0.28
+    shift_hours: 9
+    qualification: CABIN_DUTY_ELIGIBLE
+  - code: GATE_AGENT
+    weight: 0.25
+    shift_hours: 8
+  - code: AIRCRAFT_TECH
+    weight: 0.25
+    shift_hours: 10
+    qualification: TECHOPS_CURRENT
+  jurisdiction_packs:
+  - faa_part_117
+  - faa_ac_117_2
+  - flsa_hours_worked
+  - state_wage_hour
+  decision_passport_classes:
+  - crew_legality_evaluation
+  - fatigue_override_request
+  - manual_crew_reconstruction
+  - irregular_ops_pay_protection
+  - schedule_republish_after_incident
+  sdm_export:
+    file_version: '09.08'
+    object_catalog: config/export-object-catalog.yaml
+    object_count: 337
+    payload_policy: empty_configuration_envelopes_only
+  supabase:
+    tenant_partition_id: 10000000-0000-4000-8000-000000000003
+    load_enabled_by_default: false
+  api:
+    private_subdomain_hint: delta.assurance.kronosguy.com
+    provisioning_status: not_requested

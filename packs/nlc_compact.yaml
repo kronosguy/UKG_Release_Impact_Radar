@@ -1,0 +1,8 @@
+version: 1.0.0
+source_id: nlc_compact
+status: primary_verified
+citation: Nurse Licensure Compact materials
+primary_url: https://www.ncsbn.org/compacts
+controls:
+- compact_state_resolution
+- multistate_license_validation

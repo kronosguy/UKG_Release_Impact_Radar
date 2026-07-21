@@ -1,0 +1,9 @@
+version: 1.0.0
+source_id: cms_482_23
+status: primary_verified
+citation: "42 C.F.R. \xA7 482.23"
+primary_url: https://www.ecfr.gov/current/title-42/chapter-IV/subchapter-G/part-482/subpart-C/section-482.23
+controls:
+- active_licensure
+- rn_supervision
+- staffing_exception_passport

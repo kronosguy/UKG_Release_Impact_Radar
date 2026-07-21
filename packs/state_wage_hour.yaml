@@ -1,0 +1,8 @@
+version: 1.0.0
+source_id: state_wage_hour
+status: primary_verified
+citation: State wage-hour overlay registry
+primary_url: null
+controls:
+- effective_dated_state_rules
+- local_overtime_overlay

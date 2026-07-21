@@ -1,0 +1,10 @@
+version: 1.0.0
+source_id: illinois_bipa
+status: primary_verified
+citation: 740 ILCS 14
+primary_url: https://www.ilga.gov/ftp/ILCS/Ch%200740/Act%200014/074000140K15.html
+controls:
+- written_notice
+- consent
+- retention_policy
+- destruction

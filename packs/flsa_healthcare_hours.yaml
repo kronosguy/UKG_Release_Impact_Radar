@@ -1,0 +1,9 @@
+version: 1.0.0
+source_id: flsa_healthcare_hours
+status: primary_verified
+citation: DOL Fact Sheet 53
+primary_url: https://www.dol.gov/agencies/whd/fact-sheets/53-healthcare-hours-worked
+controls:
+- healthcare_rounding
+- meal_break
+- compensable_time

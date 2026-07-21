@@ -1,0 +1,8 @@
+version: 1.0.0
+source_id: osha_1910_147
+status: primary_verified
+citation: "29 C.F.R. \xA7 1910.147"
+primary_url: https://www.osha.gov/laws-regs/regulations/standardnumber/1910/1910.147
+controls:
+- loto_authorization
+- energy_control_qualification

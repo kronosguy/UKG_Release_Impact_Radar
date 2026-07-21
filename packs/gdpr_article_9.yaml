@@ -1,0 +1,9 @@
+version: 1.0.0
+source_id: gdpr_article_9
+status: primary_verified
+citation: GDPR Article 9
+primary_url: https://eur-lex.europa.eu/eli/reg/2016/679/2016-05-04/eng
+controls:
+- special_category_data
+- lawful_basis
+- minimization

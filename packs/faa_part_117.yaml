@@ -1,0 +1,10 @@
+version: 1.0.0
+source_id: faa_part_117
+status: primary_verified
+citation: 14 C.F.R. Part 117
+primary_url: https://www.ecfr.gov/current/title-14/chapter-I/subchapter-G/part-117
+controls:
+- duty_legality
+- required_rest
+- cumulative_lookback
+- frms_override_dual_key

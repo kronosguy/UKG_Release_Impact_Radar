@@ -1,0 +1,73 @@
+apiVersion: kronosguy.com/v1alpha1
+kind: UKGAssuranceTenantFoundation
+metadata:
+  name: mgm
+  display_name: MGM Resorts Las Vegas
+  tenant_id: 10000000-0000-4000-8000-000000000004
+  foundation_only: true
+spec:
+  portfolio_scope: All Las Vegas properties, venues, departments, and work areas
+  project_binding:
+    primary_project: P01
+    supporting_projects:
+    - P02
+    - P03
+    - P04
+    - P05
+    binding_mode: locked
+  hierarchy_contract:
+    levels:
+    - ordinal: 1
+      key: enterprise
+      required: true
+    - ordinal: 2
+      key: market
+      required: true
+    - ordinal: 3
+      key: property
+      required: true
+    - ordinal: 4
+      key: division
+      required: true
+    - ordinal: 5
+      key: department
+      required: true
+    - ordinal: 6
+      key: venue
+      required: true
+    - ordinal: 7
+      key: work_area
+      required: true
+    records_generated: false
+  jurisdiction_packs:
+  - key: US_FEDERAL_WAGE
+    status: reference_only_until_invariant_bundle_is_signed
+  - key: NEVADA_WAGE
+    status: reference_only_until_invariant_bundle_is_signed
+  - key: NEVADA_GAMING
+    status: reference_only_until_invariant_bundle_is_signed
+  - key: COLLECTIVE_BARGAINING
+    status: reference_only_until_invariant_bundle_is_signed
+  - key: TIP_COMPLIANCE
+    status: reference_only_until_invariant_bundle_is_signed
+  ukg_export:
+    format: SDM_FOLDER_RESPONSE_JSON
+    file_version: '09.08'
+    source_tenant_id: portfolio_mgm_foundation
+    source_label: MGM Resorts Las Vegas FOUNDATION
+    target_file: mgm_foundation_export.json
+    object_catalog: config/export-object-catalog.yaml
+    include_mode: full_catalog
+    payload_mode: empty_collections_only
+  database:
+    tenant_partition_id: 10000000-0000-4000-8000-000000000004
+    migrations_path: database/migrations
+    operational_rows_generated: false
+  api:
+    private_subdomain_hint: mgm.assurance.kronosguy.com
+    provisioning_status: not_requested
+  generation_prohibitions:
+    synthetic_data: true
+    production_data: true
+    employee_data: true
+    biometric_data: true

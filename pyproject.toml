@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=70", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ukg-release-impact-radar-generator"
+version = "1.0.0"
+description = "Deterministic five-tenant UKG Workforce Decision Assurance data generator"
+requires-python = ">=3.12"
+dependencies = [
+  "PyYAML==6.0.2",
+  "jsonschema==4.26.0",
+  "python-dateutil>=2.9,<3",
+  "psycopg[binary]>=3.2,<4",
+  "pandas>=2.2,<4",
+  "pyarrow>=17,<25"
+]
+
+[project.scripts]
+ukg-generate = "generator.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.setuptools.packages.find]
+include = ["generator*"]

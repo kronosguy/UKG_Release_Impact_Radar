@@ -1,0 +1,10 @@
+version: 1.0.0
+source_id: ico_worker_biometrics
+status: primary_verified
+citation: ICO worker biometrics guidance
+primary_url: https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/employment/monitoring-workers/can-we-use-biometric-data-for-time-and-access-control-and-monitoring/
+controls:
+- dpia
+- alternative_path
+- manual_review
+- no_detriment

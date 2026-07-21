@@ -1,0 +1,82 @@
+apiVersion: kronosguy.com/v1
+kind: UKGAssuranceTenantGenerator
+metadata:
+  name: ascension
+  display_name: Ascension Healthcare
+  tenant_key: ascension
+  tenant_uuid: 10000000-0000-4000-8000-000000000002
+  package_slug: ascension
+spec:
+  project_binding:
+    primary_project: P02
+    supporting_projects:
+    - P01
+    - P03
+    - P04
+    - P05
+    binding_mode: locked
+  generator:
+    enabled: true
+    synthetic_only: true
+    minimum_year: 2016
+    maximum_year: 2026
+    portfolio_employee_count: 1400
+    portfolio_site_count: 6
+    tenant_specific_stream: clinical_staffing
+  hierarchy:
+    levels:
+    - enterprise
+    - region
+    - ministry
+    - facility
+    - service_line
+    - department
+    - clinical_unit
+    seed_sites:
+    - HOSP_A
+    - HOSP_B
+    - HOSP_C
+    - HOSP_D
+    - HOSP_E
+    - HOSP_F
+  roles:
+  - code: REGISTERED_NURSE
+    weight: 0.4
+    shift_hours: 12
+    qualification: RN_LICENSE_ACTIVE
+  - code: LICENSED_PRACTICAL_NURSE
+    weight: 0.15
+    shift_hours: 12
+    qualification: LPN_LICENSE_ACTIVE
+  - code: PATIENT_CARE_TECH
+    weight: 0.2
+    shift_hours: 12
+  - code: RESPIRATORY_THERAPIST
+    weight: 0.1
+    shift_hours: 12
+    qualification: RT_LICENSE_ACTIVE
+  - code: CLINICAL_SUPPORT
+    weight: 0.15
+    shift_hours: 8
+  jurisdiction_packs:
+  - cms_482_23
+  - nlc_compact
+  - flsa_hours_worked
+  - flsa_healthcare_hours
+  decision_passport_classes:
+  - patient_unit_staffing_exception
+  - downtime_manual_entry_attestation
+  - retro_payroll_correction
+  - credential_expiry_override
+  - provisional_presence_wage_protection
+  sdm_export:
+    file_version: '09.08'
+    object_catalog: config/export-object-catalog.yaml
+    object_count: 337
+    payload_policy: empty_configuration_envelopes_only
+  supabase:
+    tenant_partition_id: 10000000-0000-4000-8000-000000000002
+    load_enabled_by_default: false
+  api:
+    private_subdomain_hint: ascension.assurance.kronosguy.com
+    provisioning_status: not_requested

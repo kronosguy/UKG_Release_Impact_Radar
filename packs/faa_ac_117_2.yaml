@@ -1,0 +1,8 @@
+version: 1.0.0
+source_id: faa_ac_117_2
+status: primary_verified
+citation: FAA AC 117-2
+primary_url: https://www.faa.gov/regulations_policies/advisory_circulars/index.cfm/go/document.information/documentid/1020388
+controls:
+- fatigue_education
+- fatigue_reporting

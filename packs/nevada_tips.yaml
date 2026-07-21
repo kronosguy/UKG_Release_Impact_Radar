@@ -1,0 +1,9 @@
+version: 1.0.0
+source_id: nevada_tips
+status: primary_verified
+citation: NRS 608.160
+primary_url: https://www.leg.state.nv.us/nrs/NRS-608.html#NRS608Sec160
+controls:
+- tip_ownership
+- no_tip_credit
+- employer_retention_prohibited

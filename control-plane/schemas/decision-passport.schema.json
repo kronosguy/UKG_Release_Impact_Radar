@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ukg:assurance:decision-passport.schema.json",
+  "title": "DecisionPassport",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "passport_id",
+    "tenant_id",
+    "project_id",
+    "decision_class",
+    "status",
+    "subject_refs",
+    "event_window",
+    "evidence",
+    "anchors",
+    "invariant_checks",
+    "writer",
+    "evaluator",
+    "approval_chain",
+    "action",
+    "observed_ukg_state",
+    "payroll_publication",
+    "reconciliation",
+    "assurance"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "passport_id": { "type": "string", "pattern": "^dp_[a-z0-9]{26}$" },
+    "tenant_id": { "type": "string", "enum": ["delta", "ascension", "mgm_lv", "schneider", "pepsico"] },
+    "project_id": { "type": "string", "enum": ["P01", "P02", "P03", "P04", "P05"] },
+    "decision_class": { "type": "string", "minLength": 3 },
+    "status": { "type": "string", "enum": ["draft", "evaluated", "approved", "executed", "observed", "reconciled", "quarantined", "superseded"] },
+    "subject_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/SubjectRef" }
+    },
+    "event_window": { "$ref": "#/$defs/EventWindow" },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/EvidenceRef" }
+    },
+    "anchors": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/AnchorRef" }
+    },
+    "anchor_integrity_avg": { "type": "number", "minimum": 0, "maximum": 1 },
+    "invariant_checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/InvariantCheck" }
+    },
+    "writer": { "$ref": "#/$defs/AgentOrHuman" },
+    "evaluator": { "$ref": "#/$defs/AgentOrHuman" },
+    "approval_chain": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/ApprovalStep" }
+    },
+    "autonomy_envelope_ref": { "type": "string", "pattern": "^ae_[a-z0-9]{26}$" },
+    "action": { "$ref": "#/$defs/ActionBlock" },
+    "observed_ukg_state": { "$ref": "#/$defs/ObservedState" },
+    "payroll_publication": { "$ref": "#/$defs/PayrollPublication" },
+    "reconciliation": { "$ref": "#/$defs/ReconciliationBlock" },
+    "worker_harm_signals": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/WorkerHarmSignal" }
+    },
+    "assurance": { "$ref": "#/$defs/AssuranceBlock" },
+    "hash_chain": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/HashLink" }
+    }
+  },
+  "$defs": {
+    "UUIDishTime": { "type": "string", "format": "date-time" },
+    "SubjectRef": {
+      "type": "object",
+      "required": ["kind", "id"],
+      "properties": {
+        "kind": { "type": "string", "enum": ["employee", "assignment", "timecard", "shift", "route", "qualification", "property", "unit", "device"] },
+        "id": { "type": "string", "minLength": 1 },
+        "effective_at": { "$ref": "#/$defs/UUIDishTime" }
+      },
+      "additionalProperties": false
+    },
+    "EventWindow": {
+      "type": "object",
+      "required": ["occurred_start", "occurred_end", "business_dates"],
+      "properties": {
+        "occurred_start": { "$ref": "#/$defs/UUIDishTime" },
+        "occurred_end": { "$ref": "#/$defs/UUIDishTime" },
+        "business_dates": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "format": "date" }
+        },
+        "timezone_context": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "EvidenceRef": {
+      "type": "object",
+      "required": ["evidence_id", "envelope_id", "source_system", "kind", "sha256"],
+      "properties": {
+        "evidence_id": { "type": "string", "pattern": "^ev_[a-z0-9]{26}$" },
+        "envelope_id": { "type": "string", "pattern": "^ee_[a-z0-9]{26}$" },
+        "source_system": { "type": "string" },
+        "kind": { "type": "string", "enum": ["punch", "schedule", "assignment", "attestation", "webhook", "api_pull", "batch_file", "sensor", "manual_entry", "payroll_ack"] },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "anchor_candidate": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "AnchorRef": {
+      "type": "object",
+      "required": ["anchor_id", "anchor_type", "integrity_score", "independence_class"],
+      "properties": {
+        "anchor_id": { "type": "string", "pattern": "^an_[a-z0-9]{26}$" },
+        "anchor_type": { "type": "string", "enum": ["physical_capture", "runtime_receipt", "signed_ack", "device_attestation", "external_status", "human_attestation_dual", "observed_ukg_state"] },
+        "integrity_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "independence_class": { "type": "string", "enum": ["independent", "semi_independent", "entangled"] },
+        "degradation_reason": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "InvariantCheck": {
+      "type": "object",
+      "required": ["invariant_code", "bundle_hash", "result", "source_status"],
+      "properties": {
+        "invariant_code": { "type": "string" },
+        "bundle_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "result": { "type": "string", "enum": ["pass", "fail", "not_applicable", "manual_review_required"] },
+        "source_status": { "type": "string", "enum": ["primary_verified", "design_heuristic"] },
+        "detail_ref": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "AgentOrHuman": {
+      "type": "object",
+      "required": ["actor_type", "actor_id"],
+      "properties": {
+        "actor_type": { "type": "string", "enum": ["human", "agent", "service"] },
+        "actor_id": { "type": "string" },
+        "model_or_role": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "ApprovalStep": {
+      "type": "object",
+      "required": ["step", "approver", "decision", "decided_at"],
+      "properties": {
+        "step": { "type": "string" },
+        "approver": { "$ref": "#/$defs/AgentOrHuman" },
+        "decision": { "type": "string", "enum": ["approved", "rejected", "escalated"] },
+        "decided_at": { "$ref": "#/$defs/UUIDishTime" },
+        "dual_key_group": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "ActionBlock": {
+      "type": "object",
+      "required": ["action_type", "requested_changes"],
+      "properties": {
+        "action_type": { "type": "string", "enum": ["hold", "publish", "correct", "override", "recover", "quarantine", "replay", "reassign"] },
+        "requested_changes": { "type": "array", "items": { "type": "string" } },
+        "rollback_plan_ref": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "ObservedState": {
+      "type": "object",
+      "required": ["ukg_object_refs", "observed_at", "state_hash"],
+      "properties": {
+        "ukg_object_refs": { "type": "array", "items": { "type": "string" } },
+        "observed_at": { "$ref": "#/$defs/UUIDishTime" },
+        "state_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "additionalProperties": false
+    },
+    "PayrollPublication": {
+      "type": "object",
+      "required": ["publication_state", "outbox_key"],
+      "properties": {
+        "publication_state": { "type": "string", "enum": ["not_started", "prepared", "validated", "signed", "queued", "transmitted", "acknowledged", "applied", "corrected", "blocked"] },
+        "outbox_key": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "bundle_hash": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" }
+      },
+      "additionalProperties": false
+    },
+    "ReconciliationBlock": {
+      "type": "object",
+      "required": ["status", "wage_protection_applied"],
+      "properties": {
+        "status": { "type": "string", "enum": ["pending", "complete", "partial", "quarantined"] },
+        "wage_protection_applied": { "type": "boolean" },
+        "delta_batch_refs": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "WorkerHarmSignal": {
+      "type": "object",
+      "required": ["signal_code", "severity", "opened_at"],
+      "properties": {
+        "signal_code": { "type": "string" },
+        "severity": { "type": "string", "enum": ["medium", "high", "critical"] },
+        "opened_at": { "$ref": "#/$defs/UUIDishTime" },
+        "closed_at": { "type": ["string", "null"], "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "AssuranceBlock": {
+      "type": "object",
+      "required": ["passport_completeness", "anchor_integrity_avg", "assurance_score"],
+      "properties": {
+        "passport_completeness": { "type": "number", "minimum": 0, "maximum": 100 },
+        "anchor_integrity_avg": { "type": "number", "minimum": 0, "maximum": 100 },
+        "assurance_score": { "type": "number", "minimum": 0, "maximum": 100 },
+        "cross_tenant_isolation_passed": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "HashLink": {
+      "type": "object",
+      "required": ["kind", "sha256"],
+      "properties": {
+        "kind": { "type": "string" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

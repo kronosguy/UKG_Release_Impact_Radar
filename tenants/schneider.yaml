@@ -1,0 +1,84 @@
+apiVersion: kronosguy.com/v1
+kind: UKGAssuranceTenantGenerator
+metadata:
+  name: schneider
+  display_name: Schneider Electric
+  tenant_key: schneider
+  tenant_uuid: 10000000-0000-4000-8000-000000000005
+  package_slug: schneider
+spec:
+  project_binding:
+    primary_project: P04
+    supporting_projects:
+    - P01
+    - P02
+    - P03
+    - P05
+    binding_mode: locked
+  generator:
+    enabled: true
+    synthetic_only: true
+    minimum_year: 2016
+    maximum_year: 2026
+    portfolio_employee_count: 1000
+    portfolio_site_count: 6
+    tenant_specific_stream: qualification_assignments
+  hierarchy:
+    levels:
+    - enterprise
+    - region
+    - country
+    - legal_entity
+    - business_unit
+    - site
+    - department
+    - work_center
+    seed_sites:
+    - PLANT_A
+    - PLANT_B
+    - PLANT_C
+    - PLANT_D
+    - FIELD_E
+    - FIELD_F
+  roles:
+  - code: ASSEMBLY_TECH
+    weight: 0.3
+    shift_hours: 8
+  - code: MAINTENANCE_TECH
+    weight: 0.2
+    shift_hours: 10
+    qualification: LOTO_AUTHORIZED
+  - code: ELECTRICAL_SPECIALIST
+    weight: 0.16
+    shift_hours: 10
+    qualification: ELECTRICAL_CLEARANCE
+  - code: WAREHOUSE_OPERATOR
+    weight: 0.2
+    shift_hours: 8
+  - code: FIELD_SERVICE_ENGINEER
+    weight: 0.14
+    shift_hours: 10
+    qualification: FIELD_SERVICE_CURRENT
+  jurisdiction_packs:
+  - osha_1910_147
+  - osha_1910_269
+  - flsa_hours_worked
+  - gdpr_article_9
+  - ico_worker_biometrics
+  decision_passport_classes:
+  - qualification_resolution
+  - hazardous_energy_authorization
+  - electrical_clearance_assignment
+  - cross_plant_skill_substitution
+  - biometric_enrichment_opt_in
+  sdm_export:
+    file_version: '09.08'
+    object_catalog: config/export-object-catalog.yaml
+    object_count: 337
+    payload_policy: empty_configuration_envelopes_only
+  supabase:
+    tenant_partition_id: 10000000-0000-4000-8000-000000000005
+    load_enabled_by_default: false
+  api:
+    private_subdomain_hint: schneider.assurance.kronosguy.com
+    provisioning_status: not_requested
