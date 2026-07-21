@@ -3,7 +3,7 @@ requires = ["setuptools>=70", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ukg-release-impact-radar-generator"
+name = "ukg-workforce-assurance-data-generator"
 version = "1.0.0"
 description = "Deterministic five-tenant UKG Workforce Decision Assurance data generator"
 requires-python = ">=3.12"
