@@ -1,0 +1,22 @@
+version: 1.0.0
+profiles:
+  smoke:
+    employee_count: 4
+    site_count: 2
+    formats:
+    - jsonl
+    - csv
+  demo:
+    employee_count: 100
+    site_count: 4
+    formats:
+    - jsonl
+    - csv
+    - parquet
+  portfolio:
+    employee_count: null
+    site_count: null
+    formats:
+    - jsonl
+    - csv
+    - parquet

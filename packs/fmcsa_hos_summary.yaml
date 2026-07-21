@@ -1,0 +1,9 @@
+version: 1.0.0
+source_id: fmcsa_hos_summary
+status: primary_verified
+citation: FMCSA Hours of Service summary
+primary_url: https://www.fmcsa.dot.gov/regulations/hours-service/summary-hours-service-regulations
+controls:
+- dispatch_hos_validation
+- driving_window
+- rest_window

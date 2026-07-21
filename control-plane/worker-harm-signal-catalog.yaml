@@ -1,0 +1,20 @@
+version: 1.0.0
+signals:
+- code: WHS_PAY_LOSS_RISK
+  severity: critical
+  opens_pain_channel: true
+- code: WHS_LEGALITY_BREACH_RISK
+  severity: critical
+  opens_pain_channel: true
+- code: WHS_ACCESS_DENIAL_AUTOMATION
+  severity: high
+  opens_pain_channel: true
+- code: WHS_CREDENTIAL_INVALID_ASSIGNMENT
+  severity: critical
+  opens_pain_channel: true
+- code: WHS_DOWNTIME_MANUAL_BACKFILL
+  severity: high
+  opens_pain_channel: false
+- code: WHS_TIP_POOL_DISTORTION
+  severity: high
+  opens_pain_channel: true

@@ -1,0 +1,27 @@
+version: 1.0.0
+rules:
+- foundation_field: metadata.foundation_only
+  generator_field: spec.generator.enabled
+  resolution: Foundation remains immutable; generator overlay enables synthetic data outside SDM.
+- foundation_field: metadata.name=mgm
+  generator_field: metadata.tenant_key=mgm_lv
+  resolution: mgm_lv canonical; mgm package_slug retained.
+- foundation_field: spec.ukg_export.payload_mode
+  generator_field: spec.sdm_export.payload_policy
+  resolution: Both require empty configuration envelopes; operational data uses separate output tree.
+tenant_mapping:
+  mgm_lv:
+    generator_manifest: tenants/mgm_lv.yaml
+    foundation_manifest: foundation/source-manifests/mgm_lv-foundation.yaml
+  ascension:
+    generator_manifest: tenants/ascension.yaml
+    foundation_manifest: foundation/source-manifests/ascension-foundation.yaml
+  delta:
+    generator_manifest: tenants/delta.yaml
+    foundation_manifest: foundation/source-manifests/delta-foundation.yaml
+  schneider:
+    generator_manifest: tenants/schneider.yaml
+    foundation_manifest: foundation/source-manifests/schneider-foundation.yaml
+  pepsico:
+    generator_manifest: tenants/pepsico.yaml
+    foundation_manifest: foundation/source-manifests/pepsico-foundation.yaml

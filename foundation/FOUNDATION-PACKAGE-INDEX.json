@@ -1,0 +1,30 @@
+{
+  "foundation_only": true,
+  "packages": [
+    {
+      "file": "ascension-ukg-assurance-foundation.zip",
+      "sha256": "f1aff9750b2e3d1e01d81cec58899f3c9e6fb405b2d6d271d49fa162c091bdfb",
+      "size_bytes": 225008
+    },
+    {
+      "file": "delta-ukg-assurance-foundation.zip",
+      "sha256": "181c80549337b40b3bc94d18641f77762d4c359eee8fa121ec4d44fcef83647a",
+      "size_bytes": 219418
+    },
+    {
+      "file": "mgm-ukg-assurance-foundation.zip",
+      "sha256": "d299825fe23aeb3781e8d420b406493900d7e38c83c961c7d0ca7f66ad0b4fa1",
+      "size_bytes": 216641
+    },
+    {
+      "file": "pepsico-ukg-assurance-foundation.zip",
+      "sha256": "f1d7006c3b74d04aa03b12fadaaabba0d7b8bd148ddca1e2e3fcb864c1a9f46f",
+      "size_bytes": 222261
+    },
+    {
+      "file": "schneider-ukg-assurance-foundation.zip",
+      "sha256": "5b97686a79f9df0244b74eb50bab32010a613c011a68f20765ea9590a2048907",
+      "size_bytes": 225018
+    }
+  ]
+}

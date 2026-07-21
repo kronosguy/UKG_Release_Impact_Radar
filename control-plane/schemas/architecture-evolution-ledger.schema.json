@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ukg:assurance:architecture-evolution-ledger.schema.json",
+  "title": "ArchitectureEvolutionLedgerEntry",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "change_id",
+    "change_type",
+    "proposed_by",
+    "source_proof",
+    "affected_artifacts",
+    "dual_control",
+    "regression_suite",
+    "activation_plan",
+    "rollback_package"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "change_id": { "type": "string", "pattern": "^ael_[a-z0-9]{26}$" },
+    "change_type": { "type": "string", "enum": ["frozen_invariant_change", "schema_change", "generator_change", "rls_change", "threat_model_change"] },
+    "proposed_by": { "type": "string" },
+    "source_proof": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "affected_artifacts": { "type": "array", "items": { "type": "string" } },
+    "dual_control": {
+      "type": "object",
+      "required": ["domain_owner", "platform_owner", "approved"],
+      "properties": {
+        "domain_owner": { "type": "string" },
+        "platform_owner": { "type": "string" },
+        "approved": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "regression_suite": {
+      "type": "object",
+      "required": ["held_out_suite_id", "passed"],
+      "properties": {
+        "held_out_suite_id": { "type": "string" },
+        "passed": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "activation_plan": {
+      "type": "object",
+      "required": ["not_before", "canary_scope"],
+      "properties": {
+        "not_before": { "type": "string", "format": "date-time" },
+        "canary_scope": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "rollback_package": {
+      "type": "object",
+      "required": ["artifact_hash", "restore_steps"],
+      "properties": {
+        "artifact_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "restore_steps": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

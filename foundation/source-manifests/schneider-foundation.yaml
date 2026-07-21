@@ -1,0 +1,76 @@
+apiVersion: kronosguy.com/v1alpha1
+kind: UKGAssuranceTenantFoundation
+metadata:
+  name: schneider
+  display_name: Schneider Electric
+  tenant_id: 10000000-0000-4000-8000-000000000005
+  foundation_only: true
+spec:
+  portfolio_scope: All legal entities, business units, sites, plants, and work centers
+  project_binding:
+    primary_project: P04
+    supporting_projects:
+    - P01
+    - P02
+    - P03
+    - P05
+    binding_mode: locked
+  hierarchy_contract:
+    levels:
+    - ordinal: 1
+      key: enterprise
+      required: true
+    - ordinal: 2
+      key: region
+      required: true
+    - ordinal: 3
+      key: country
+      required: true
+    - ordinal: 4
+      key: legal_entity
+      required: true
+    - ordinal: 5
+      key: business_unit
+      required: true
+    - ordinal: 6
+      key: site
+      required: true
+    - ordinal: 7
+      key: department
+      required: true
+    - ordinal: 8
+      key: work_center
+      required: true
+    records_generated: false
+  jurisdiction_packs:
+  - key: GLOBAL_DATA_RESIDENCY
+    status: reference_only_until_invariant_bundle_is_signed
+  - key: US_FEDERAL_WAGE
+    status: reference_only_until_invariant_bundle_is_signed
+  - key: OSHA_1910_147
+    status: reference_only_until_invariant_bundle_is_signed
+  - key: OSHA_1910_269
+    status: reference_only_until_invariant_bundle_is_signed
+  - key: STATE_LOCAL_WAGE
+    status: reference_only_until_invariant_bundle_is_signed
+  ukg_export:
+    format: SDM_FOLDER_RESPONSE_JSON
+    file_version: '09.08'
+    source_tenant_id: portfolio_schneider_foundation
+    source_label: Schneider Electric FOUNDATION
+    target_file: schneider_foundation_export.json
+    object_catalog: config/export-object-catalog.yaml
+    include_mode: full_catalog
+    payload_mode: empty_collections_only
+  database:
+    tenant_partition_id: 10000000-0000-4000-8000-000000000005
+    migrations_path: database/migrations
+    operational_rows_generated: false
+  api:
+    private_subdomain_hint: schneider.assurance.kronosguy.com
+    provisioning_status: not_requested
+  generation_prohibitions:
+    synthetic_data: true
+    production_data: true
+    employee_data: true
+    biometric_data: true

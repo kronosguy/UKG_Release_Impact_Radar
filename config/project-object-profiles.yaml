@@ -1,0 +1,177 @@
+apiVersion: kronosguy.com/v1alpha1
+kind: AssuranceProjectObjectProfiles
+metadata:
+  name: p01-p05-sdm-object-bindings
+  catalog_object_count: 337
+spec:
+  P01:
+    name: Edge Time-Capture and Labor Context Integrity Grid
+    required_objects:
+    - Devices
+    - DeviceGroups
+    - DeviceTags
+    - CardAndReaders
+    - CardFormats
+    - GenericBadgeFormats
+    - CommunicationSettings
+    - ConfigurationProfile
+    - GeneralSettings
+    - AccessMethodProfile
+    - KnownIPAddress
+    - KnownPlace
+    - locationTypes
+    - WIFI_ACCESS_POINTS
+    - WIFI_NETWORK
+    - QR_CODES
+    - KioskConfiguration
+    - KioskInstance
+    - WSATkTerminalRule
+    - WSAPunchRoundRule
+    - TimecardSettings
+    - AttestationButtonsSetup
+    - AttestationConditionsSetup
+    - AttestationProfilesSetup
+    - AttestationAssignmentsSetup
+    - AttestationModelsSetup
+    - AttestationWorkflowsSetup
+    - WSAFunctionAccessProfile
+    - DataAccessGroup
+    - WSADP_DISPLAYPROFILES
+    - DomainEvent
+    - DomainEventNotification
+    - CONTROL_CENTER_PROFILE
+    - ALERT_PROFILE
+  P02:
+    name: Temporal Punch-to-Pay Evidence and Reconciliation Ledger
+    required_objects:
+    - WSAPayRule
+    - WSAWorkRule
+    - WSAWorkRuleDAP
+    - WSAPayCodeDAP
+    - WSAOvertimeRule
+    - WSABreakRule
+    - WSAExceptionRule
+    - WSAPunchRoundRule
+    - WSAIntervalRoundRule
+    - WSAProcessingOrderRule
+    - WSAFixedRule
+    - WSATkTerminalRule
+    - WSAScheduledHoursType
+    - WSACombinedPayCodeRule
+    - WSABonusDeductRule
+    - WSAShiftGuarantee
+    - WSASignOffRestriction
+    - WSAApprovalRestrictions
+    - WSAAccrualPolicy
+    - WSAAccrualProfile
+    - WSACfgAccrualCode
+    - HCMPayrollConfigAPI
+    - PaycodePayrollCodeConfigAPI
+    - AccuralCodeMappingConfigAPI
+    - AccuralTransactionMappingConfigAPI
+    - GeneralLedgerMappingConfigAPI
+    - integration_migrate
+    - sequence_migrate
+    - DATA_VIEWS
+    - DATA_VIEW_PROFILES
+    - published_report
+    - reportdo
+    - IhubListParameter
+  P03:
+    name: Workforce Incident Causality and Recovery Command Platform
+    required_objects:
+    - DomainEvent
+    - DomainEventCategory
+    - DomainEventNavigation
+    - DomainEventNotification
+    - GenericNotification
+    - NotificationProfile
+    - ALERT_PROFILE
+    - CONTROL_CENTER_PROFILE
+    - ExceptionCategories
+    - ExceptionTiles
+    - CUSTOM_TILE
+    - ManagerTile
+    - OperationalMetrics
+    - KPIF_KPI_DEFINITION
+    - KPIF_METRIC_DEFINITION
+    - KPIF_TARGET_MANAGEMENT
+    - DATA_VIEWS
+    - DATA_VIEW_PROFILES
+    - published_report
+    - reportdo
+    - WebServiceConfiguration
+    - BusinessProcess
+    - ProcessModel
+    - integration_migrate
+    - AttendanceProcessorRequest
+    - Devices
+    - DeviceGroups
+    - CommunicationSettings
+    - KnownIPAddress
+    - KnownPlace
+  P04:
+    name: Canonical Workforce Assignment, Qualification and Entitlement Graph
+    required_objects:
+    - CostCenter
+    - LocationSet
+    - LocationProfileSettings
+    - LocationRuleSet
+    - LocationRuleSetAssignments
+    - jobs
+    - JobGroup
+    - EmployeeGroup
+    - WorkerType
+    - EmploymentTerm
+    - Certification
+    - LaborCategory
+    - LaborCategoryEntry
+    - LaborCategoryEntryList
+    - LaborCategoryProfile
+    - BusinessStructureAttributes
+    - WSADP_PERSONINFORMATIONPROFILES
+    - WSADP_PEOPLESETTINGPROFILES
+    - WSAFunctionAccessProfile
+    - DataAccessGroup
+    - WSADP_DISPLAYPROFILES
+    - RoleProfileKBO
+    - HyperFindProfile
+    - HyperFindQueryImport
+    - SchedulePlannerProfile
+    - ForecastPlannerProfile
+    - RequestReviewerList
+    - RequestReviewerPurpose
+    - EmployeeVisibilityPeriods
+  P05:
+    name: Face-Only Geofenced Time-Capture Assurance Platform
+    required_objects:
+    - BioConsentForms
+    - Devices
+    - DeviceGroups
+    - DeviceTags
+    - ConfigurationProfile
+    - AccessMethodProfile
+    - KnownPlace
+    - KnownIPAddress
+    - locationTypes
+    - WIFI_ACCESS_POINTS
+    - WIFI_NETWORK
+    - KioskConfiguration
+    - KioskInstance
+    - AttestationButtonsSetup
+    - AttestationConditionsSetup
+    - AttestationProfilesSetup
+    - AttestationAssignmentsSetup
+    - AttestationModelsSetup
+    - AttestationWorkflowsSetup
+    - AttestationQuestion
+    - AttestationAnswer
+    - AttestationTemplateMapping
+    - WSATkTerminalRule
+    - WSAPunchRoundRule
+    - TimecardSettings
+    - WSAFunctionAccessProfile
+    - DataAccessGroup
+    - WSADP_DISPLAYPROFILES
+    - DomainEvent
+    - DomainEventNotification

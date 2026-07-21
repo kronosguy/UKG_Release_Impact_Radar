@@ -1,0 +1,9 @@
+version: 1.0.0
+source_id: washington_biometrics_19_375
+status: primary_verified
+citation: Chapter 19.375 RCW
+primary_url: https://app.leg.wa.gov/RCW/default.aspx?cite=19.375&full=true
+controls:
+- enrollment_notice
+- disclosure_controls
+- retention

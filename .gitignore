@@ -1,20 +1,11 @@
-# Power Automate exports / local flow packages
-*.zip
-*.msapp
-*.paflow
-*.pak
-*.json.secret
-*.env
-secrets/
-.local/
-tmp/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+dist/
 out/
-
-# OS / editor
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
-# Tenant config exports (do not commit)
-snapshots/
-
+release-assets/
+.env
+.env.*
+!.env.example

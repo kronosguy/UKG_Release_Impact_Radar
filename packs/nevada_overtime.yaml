@@ -1,0 +1,9 @@
+version: 1.0.0
+source_id: nevada_overtime
+status: primary_verified
+citation: NRS 608.018
+primary_url: https://www.leg.state.nv.us/nrs/NRS-608.html#NRS608Sec018
+controls:
+- daily_overtime
+- weekly_overtime
+- four_tens_exception

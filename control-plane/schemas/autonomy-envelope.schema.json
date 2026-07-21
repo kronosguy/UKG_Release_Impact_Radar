@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ukg:assurance:autonomy-envelope.schema.json",
+  "title": "AutonomyEnvelope",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "autonomy_envelope_id",
+    "tenant_id",
+    "executor_class",
+    "allowed_actions",
+    "forbidden_actions",
+    "budget",
+    "human_interlocks",
+    "rollback_requirements"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "autonomy_envelope_id": { "type": "string", "pattern": "^ae_[a-z0-9]{26}$" },
+    "tenant_id": { "type": "string" },
+    "executor_class": { "type": "string", "enum": ["analysis_agent", "repair_agent", "publication_agent", "replay_agent"] },
+    "allowed_actions": { "type": "array", "items": { "type": "string" } },
+    "forbidden_actions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "contains": { "const": "cross_tenant_read" }
+    },
+    "budget": {
+      "type": "object",
+      "required": ["max_minutes", "max_api_calls", "max_write_sets"],
+      "properties": {
+        "max_minutes": { "type": "integer", "minimum": 1 },
+        "max_api_calls": { "type": "integer", "minimum": 1 },
+        "max_write_sets": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "human_interlocks": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["payroll_publication", "safety_override", "tenant_boundary_change", "frozen_invariant_change", "manual_identity_resolution"] }
+    },
+    "rollback_requirements": {
+      "type": "object",
+      "required": ["plan_required", "dry_run_required"],
+      "properties": {
+        "plan_required": { "type": "boolean" },
+        "dry_run_required": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

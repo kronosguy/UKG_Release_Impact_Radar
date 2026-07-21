@@ -1,0 +1,8 @@
+version: 1.0.0
+source_id: collective_bargaining_heuristic
+status: design_heuristic
+citation: Public CBA summaries only
+primary_url: null
+controls:
+- scenario_shaping_only
+- executed_cba_required_for_frozen_rules

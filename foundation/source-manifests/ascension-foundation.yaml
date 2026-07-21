@@ -1,0 +1,73 @@
+apiVersion: kronosguy.com/v1alpha1
+kind: UKGAssuranceTenantFoundation
+metadata:
+  name: ascension
+  display_name: Ascension Healthcare
+  tenant_id: 10000000-0000-4000-8000-000000000002
+  foundation_only: true
+spec:
+  portfolio_scope: All U.S. markets, ministries, facilities, departments, and clinical units
+  project_binding:
+    primary_project: P02
+    supporting_projects:
+    - P01
+    - P03
+    - P04
+    - P05
+    binding_mode: locked
+  hierarchy_contract:
+    levels:
+    - ordinal: 1
+      key: enterprise
+      required: true
+    - ordinal: 2
+      key: market
+      required: true
+    - ordinal: 3
+      key: ministry
+      required: true
+    - ordinal: 4
+      key: facility
+      required: true
+    - ordinal: 5
+      key: service_line
+      required: true
+    - ordinal: 6
+      key: department
+      required: true
+    - ordinal: 7
+      key: clinical_unit
+      required: true
+    records_generated: false
+  jurisdiction_packs:
+  - key: US_FEDERAL_WAGE
+    status: reference_only_until_invariant_bundle_is_signed
+  - key: CMS_COP
+    status: reference_only_until_invariant_bundle_is_signed
+  - key: STATE_CLINICAL_STAFFING
+    status: reference_only_until_invariant_bundle_is_signed
+  - key: NURSE_LICENSURE
+    status: reference_only_until_invariant_bundle_is_signed
+  - key: STATE_LOCAL_WAGE
+    status: reference_only_until_invariant_bundle_is_signed
+  ukg_export:
+    format: SDM_FOLDER_RESPONSE_JSON
+    file_version: '09.08'
+    source_tenant_id: portfolio_ascension_foundation
+    source_label: Ascension Healthcare FOUNDATION
+    target_file: ascension_foundation_export.json
+    object_catalog: config/export-object-catalog.yaml
+    include_mode: full_catalog
+    payload_mode: empty_collections_only
+  database:
+    tenant_partition_id: 10000000-0000-4000-8000-000000000002
+    migrations_path: database/migrations
+    operational_rows_generated: false
+  api:
+    private_subdomain_hint: ascension.assurance.kronosguy.com
+    provisioning_status: not_requested
+  generation_prohibitions:
+    synthetic_data: true
+    production_data: true
+    employee_data: true
+    biometric_data: true

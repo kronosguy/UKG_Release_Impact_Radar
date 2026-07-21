@@ -1,0 +1,70 @@
+apiVersion: kronosguy.com/v1
+kind: UKGAssuranceGeneratorContract
+metadata:
+  name: five-tenant-deterministic-history
+  version: 1.0.0
+spec:
+  constitutional_source: docs/constitution/UKG_WORKFORCE_ASSURANCE_CONSTITUTION_FINAL.md
+  year_range:
+    minimum: 2016
+    maximum: 2026
+  tenant_keys:
+  - mgm_lv
+  - ascension
+  - delta
+  - schneider
+  - pepsico
+  foundation_layer:
+    sdm_object_count: 337
+    response_collections_must_remain_empty: true
+    operational_data_inside_sdm_export: forbidden
+  operational_outputs:
+  - business_nodes
+  - workers
+  - assignments
+  - qualifications
+  - schedules
+  - punches
+  - timecard_totals
+  - incidents
+  - payroll_publications
+  - evidence_envelopes
+  - decision_passports
+  - worker_harm_signals
+  - tenant_specific_facts
+  formats:
+  - jsonl
+  - csv
+  - parquet
+  seed_hierarchy:
+  - root
+  - tenant
+  - year
+  - site
+  - worker
+  - stream
+  - scenario
+  - noise
+  profiles:
+    smoke:
+      employee_count: 4
+      site_count: 2
+    demo:
+      employee_count: 100
+      site_count: 4
+    portfolio:
+      employee_count: tenant_manifest
+      site_count: tenant_manifest
+    custom:
+      employee_count: required_cli
+      site_count: optional_cli
+  acceptance_gates:
+  - exact_337_sdm_response_files
+  - empty_sdm_response_collections
+  - deterministic_repeatability
+  - scenario_signature_presence
+  - frozen_invariant_respect
+  - cross_tenant_identifier_separation
+  - no_raw_biometric_images
+  - no_real_wage_amounts
+  - worker_harm_signal_on_protected_failures

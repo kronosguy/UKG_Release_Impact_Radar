@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ukg:assurance:generated-run-manifest.schema.json",
+  "type": "object",
+  "required": [
+    "run_id",
+    "tenant_key",
+    "tenant_uuid",
+    "start_year",
+    "end_year",
+    "root_seed",
+    "profile",
+    "record_counts",
+    "checksums"
+  ],
+  "properties": {
+    "run_id": {
+      "type": "string"
+    },
+    "tenant_key": {
+      "type": "string"
+    },
+    "tenant_uuid": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "start_year": {
+      "type": "integer",
+      "minimum": 2016,
+      "maximum": 2026
+    },
+    "end_year": {
+      "type": "integer",
+      "minimum": 2016,
+      "maximum": 2026
+    },
+    "root_seed": {
+      "type": "integer"
+    },
+    "profile": {
+      "type": "string"
+    },
+    "record_counts": {
+      "type": "object"
+    },
+    "checksums": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

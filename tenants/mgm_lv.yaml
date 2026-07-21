@@ -1,0 +1,82 @@
+apiVersion: kronosguy.com/v1
+kind: UKGAssuranceTenantGenerator
+metadata:
+  name: mgm_lv
+  display_name: MGM Resorts Las Vegas
+  tenant_key: mgm_lv
+  tenant_uuid: 10000000-0000-4000-8000-000000000004
+  package_slug: mgm
+spec:
+  project_binding:
+    primary_project: P01
+    supporting_projects:
+    - P02
+    - P03
+    - P04
+    - P05
+    binding_mode: locked
+  generator:
+    enabled: true
+    synthetic_only: true
+    minimum_year: 2016
+    maximum_year: 2026
+    portfolio_employee_count: 1200
+    portfolio_site_count: 6
+    tenant_specific_stream: labor_segments
+  hierarchy:
+    levels:
+    - enterprise
+    - market
+    - property
+    - division
+    - department
+    - venue
+    - work_area
+    seed_sites:
+    - BELLAGIO
+    - ARIA
+    - MGM_GRAND
+    - MANDALAY_BAY
+    - PARK_MGM
+    - NYNY
+  roles:
+  - code: CASINO_DEALER
+    weight: 0.18
+    shift_hours: 8
+  - code: HOUSEKEEPING
+    weight: 0.22
+    shift_hours: 8
+  - code: CULINARY
+    weight: 0.22
+    shift_hours: 8
+  - code: SECURITY
+    weight: 0.16
+    shift_hours: 8
+  - code: FRONT_DESK
+    weight: 0.12
+    shift_hours: 8
+  - code: ENTERTAINMENT_OPS
+    weight: 0.1
+    shift_hours: 10
+  jurisdiction_packs:
+  - nevada_overtime
+  - nevada_tips
+  - flsa_hours_worked
+  - collective_bargaining_heuristic
+  decision_passport_classes:
+  - edge_capture_exception
+  - multi_role_shift_segmentation
+  - tip_pool_reconstruction
+  - manual_timecard_backfill
+  - daily_overtime_exception
+  sdm_export:
+    file_version: '09.08'
+    object_catalog: config/export-object-catalog.yaml
+    object_count: 337
+    payload_policy: empty_configuration_envelopes_only
+  supabase:
+    tenant_partition_id: 10000000-0000-4000-8000-000000000004
+    load_enabled_by_default: false
+  api:
+    private_subdomain_hint: mgm.assurance.kronosguy.com
+    provisioning_status: not_requested

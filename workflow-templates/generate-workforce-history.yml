@@ -1,0 +1,236 @@
+name: Generate Five-Tenant Workforce Assurance History
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Data volume profile
+        required: true
+        type: choice
+        options: [smoke, demo, portfolio]
+        default: smoke
+      start_year:
+        description: First generated year
+        required: true
+        type: number
+        default: 2016
+      end_year:
+        description: Last generated year
+        required: true
+        type: number
+        default: 2026
+      formats:
+        description: Comma-separated output formats
+        required: true
+        type: string
+        default: jsonl
+      root_seed:
+        description: Deterministic root seed
+        required: true
+        type: number
+        default: 20260721
+      load_supabase:
+        description: Load validated output to the protected Supabase environment
+        required: true
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    tags: ['generator-v*']
+    paths:
+      - 'generator/**'
+      - 'scripts/**'
+      - 'tenants/**'
+      - 'control-plane/**'
+      - 'packs/**'
+      - 'config/**'
+      - 'database/**'
+      - 'tests/**'
+      - 'requirements.txt'
+      - 'pyproject.toml'
+      - '.github/workflows/generate-workforce-history.yml'
+  pull_request:
+    paths:
+      - 'generator/**'
+      - 'scripts/**'
+      - 'tenants/**'
+      - 'control-plane/**'
+      - 'packs/**'
+      - 'config/**'
+      - 'database/**'
+      - 'tests/**'
+      - 'requirements.txt'
+      - 'pyproject.toml'
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+
+env:
+  PYTHON_VERSION: '3.12'
+  START_YEAR: ${{ github.event_name == 'workflow_dispatch' && inputs.start_year || 2016 }}
+  END_YEAR: ${{ github.event_name == 'workflow_dispatch' && inputs.end_year || 2026 }}
+  PROFILE: ${{ github.event_name == 'workflow_dispatch' && inputs.profile || 'smoke' }}
+  FORMATS: ${{ github.event_name == 'workflow_dispatch' && inputs.formats || 'jsonl' }}
+  ROOT_SEED: ${{ github.event_name == 'workflow_dispatch' && inputs.root_seed || 20260721 }}
+
+jobs:
+  validate-control-plane:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: python -m pip install --requirement requirements.txt
+      - name: Validate Python tests
+        run: pytest
+      - name: Validate SQL
+        run: |
+          for migration in database/migrations/*.sql; do
+            sqlfluff parse --dialect postgres "$migration" >/dev/null
+          done
+      - name: Validate 337-object catalog
+        run: |
+          python - <<'PY'
+          import yaml
+          catalog = yaml.safe_load(open('config/export-object-catalog.yaml', encoding='utf-8'))
+          assert len(catalog['spec']['objects']) == 337
+          print('PASS: 337 UKG SDM configuration objects')
+          PY
+
+  generate:
+    needs: validate-control-plane
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        tenant: [mgm_lv, ascension, delta, schneider, pepsico]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: python -m pip install --requirement requirements.txt
+      - name: Generate deterministic history
+        run: |
+          python -m generator.cli generate \
+            --tenant "${{ matrix.tenant }}" \
+            --start-year "$START_YEAR" \
+            --end-year "$END_YEAR" \
+            --profile "$PROFILE" \
+            --root-seed "$ROOT_SEED" \
+            --formats "$FORMATS" \
+            --output-dir out
+      - name: Validate generated package
+        run: python scripts/validate_all.py --input-dir out
+      - name: Package tenant artifact
+        run: python scripts/package_release.py --input-dir out --release-dir release-assets
+      - name: Attest packages
+        uses: actions/attest@v4
+        with:
+          subject-path: release-assets/*.zip
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.tenant }}-workforce-assurance-${{ github.sha }}
+          path: release-assets/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
+
+  combine-artifacts:
+    needs: generate
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          pattern: '*-workforce-assurance-*'
+          path: tenant-artifacts
+      - name: Build combined five-tenant package
+        run: |
+          mkdir -p combined
+          find tenant-artifacts -type f \( -name '*.zip' -o -name '*.sha256' -o -name 'GENERATOR-PACKAGE-INDEX.json' \) -exec cp {} combined/ \;
+          test "$(find combined -maxdepth 1 -name '*.zip' | wc -l)" -eq 5
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          root = Path('combined')
+          packages = []
+          for archive in sorted(root.glob('*.zip')):
+              digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+              packages.append({'archive': archive.name, 'sha256': digest})
+          (root / 'FIVE-TENANT-GENERATOR-INDEX.json').write_text(json.dumps({'version': '1.0.0', 'packages': packages}, indent=2) + '\n')
+          PY
+          zip -q -r FIVE_TENANT_UKG_DATA_GENERATOR_OUTPUTS.zip combined
+          sha256sum FIVE_TENANT_UKG_DATA_GENERATOR_OUTPUTS.zip > FIVE_TENANT_UKG_DATA_GENERATOR_OUTPUTS.zip.sha256
+      - uses: actions/upload-artifact@v7
+        with:
+          name: five-tenant-ukg-data-generator-${{ github.sha }}
+          path: |
+            FIVE_TENANT_UKG_DATA_GENERATOR_OUTPUTS.zip
+            FIVE_TENANT_UKG_DATA_GENERATOR_OUTPUTS.zip.sha256
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
+
+  publish-release:
+    if: startsWith(github.ref, 'refs/tags/generator-v')
+    needs: combine-artifacts
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          name: five-tenant-ukg-data-generator-${{ github.sha }}
+          path: release
+      - name: Publish immutable generator release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "$GITHUB_REF_NAME" \
+            --notes "Deterministic 2016-2026 five-tenant Workforce Decision Assurance generator outputs." \
+            release/FIVE_TENANT_UKG_DATA_GENERATOR_OUTPUTS.zip \
+            release/FIVE_TENANT_UKG_DATA_GENERATOR_OUTPUTS.zip.sha256
+
+  load-supabase:
+    if: github.event_name == 'workflow_dispatch' && inputs.load_supabase == true
+    needs: generate
+    runs-on: ubuntu-24.04
+    environment: supabase-production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: python -m pip install --requirement requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          pattern: '*-workforce-assurance-*'
+          path: downloaded
+      - name: Apply database migrations
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          for migration in database/migrations/*.sql; do
+            psql "$SUPABASE_DB_URL" --set ON_ERROR_STOP=1 --file "$migration"
+          done
+      - name: Load validated tenant runs
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          mkdir -p extracted
+          find downloaded -type f -name '*.zip' -print0 | while IFS= read -r -d '' archive; do
+            unzip -q "$archive" -d extracted
+          done
+          find extracted -name RUN-MANIFEST.json -print0 | while IFS= read -r -d '' manifest; do
+            python scripts/load_supabase.py --run-dir "$(dirname "$manifest")" --apply
+          done

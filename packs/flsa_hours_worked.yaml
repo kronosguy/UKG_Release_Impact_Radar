@@ -1,0 +1,10 @@
+version: 1.0.0
+source_id: flsa_hours_worked
+status: primary_verified
+citation: FLSA hours worked guidance
+primary_url: https://www.dol.gov/agencies/whd/flsa/off-the-clock
+controls:
+- compensable_time
+- off_the_clock
+- provisional_presence
+- correction_reconciliation

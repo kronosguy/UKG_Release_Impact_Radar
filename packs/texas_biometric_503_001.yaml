@@ -1,0 +1,10 @@
+version: 1.0.0
+source_id: texas_biometric_503_001
+status: primary_verified
+citation: "Tex. Bus. & Com. Code \xA7 503.001"
+primary_url: https://statutes.capitol.texas.gov/Docs/BC/htm/BC.503.htm#503.001
+controls:
+- informed_consent
+- secure_storage
+- disclosure_controls
+- destruction

@@ -1,0 +1,87 @@
+apiVersion: kronosguy.com/v1
+kind: UKGAssuranceTenantGenerator
+metadata:
+  name: pepsico
+  display_name: PepsiCo
+  tenant_key: pepsico
+  tenant_uuid: 10000000-0000-4000-8000-000000000001
+  package_slug: pepsico
+spec:
+  project_binding:
+    primary_project: P05
+    supporting_projects:
+    - P01
+    - P02
+    - P03
+    - P04
+    binding_mode: locked
+  generator:
+    enabled: true
+    synthetic_only: true
+    minimum_year: 2016
+    maximum_year: 2026
+    portfolio_employee_count: 1200
+    portfolio_site_count: 6
+    tenant_specific_stream: capture_assurance
+  hierarchy:
+    levels:
+    - enterprise
+    - sector
+    - division
+    - region
+    - business_unit
+    - facility
+    - department
+    - line_or_route
+    seed_sites:
+    - PLANT_TX
+    - DC_TX
+    - PLANT_IL
+    - DC_IL
+    - PLANT_WA
+    - DC_WA
+  roles:
+  - code: PRODUCTION_OPERATOR
+    weight: 0.32
+    shift_hours: 8
+  - code: WAREHOUSE_OPERATOR
+    weight: 0.24
+    shift_hours: 8
+  - code: ROUTE_DRIVER
+    weight: 0.18
+    shift_hours: 10
+    qualification: DOT_HOS_ELIGIBLE
+    dot_governed: true
+  - code: MAINTENANCE_TECH
+    weight: 0.14
+    shift_hours: 10
+    qualification: MAINTENANCE_CURRENT
+  - code: QUALITY_TECH
+    weight: 0.12
+    shift_hours: 8
+    qualification: QUALITY_CURRENT
+  jurisdiction_packs:
+  - illinois_bipa
+  - texas_biometric_503_001
+  - washington_biometrics_19_375
+  - gdpr_article_9
+  - ico_worker_biometrics
+  - flsa_hours_worked
+  - fmcsa_hos_summary
+  decision_passport_classes:
+  - biometric_enrollment
+  - alternative_authentication_invocation
+  - provisional_presence_creation
+  - geofence_exception_resolution
+  - template_deletion_and_reconsent
+  sdm_export:
+    file_version: '09.08'
+    object_catalog: config/export-object-catalog.yaml
+    object_count: 337
+    payload_policy: empty_configuration_envelopes_only
+  supabase:
+    tenant_partition_id: 10000000-0000-4000-8000-000000000001
+    load_enabled_by_default: false
+  api:
+    private_subdomain_hint: pepsico.assurance.kronosguy.com
+    provisioning_status: not_requested

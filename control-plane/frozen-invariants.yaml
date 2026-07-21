@@ -1,0 +1,70 @@
+version: 1.0.0
+invariants:
+  delta:
+  - code: DELTA-FDP-001
+    source_status: primary_verified
+    rule: Regulated duty legality must pass before legality-green publication.
+  - code: DELTA-REST-001
+    source_status: primary_verified
+    rule: Required rest and cumulative lookback checks must pass.
+  - code: DELTA-PAY-001
+    source_status: primary_verified
+    rule: Incident-mode payroll publication requires a Decision Passport and outbox bundle hash.
+  - code: DELTA-FRMS-001
+    source_status: primary_verified
+    rule: FRMS overrides require a recorded fatigue channel, evaluator separation, and dual approval.
+  ascension:
+  - code: ASC-NURSE-001
+    source_status: primary_verified
+    rule: Clinical assignments requiring licensure must resolve to a current credential.
+  - code: ASC-PAY-001
+    source_status: primary_verified
+    rule: Compensable-time and off-the-clock checks execute before payroll publication.
+  - code: ASC-DOWNTIME-001
+    source_status: primary_verified
+    rule: Downtime uncertainty applies provisional-presence wage protection until reconciliation.
+  - code: ASC-NURSE-002
+    source_status: primary_verified
+    rule: RN supervision and nursing-care substitutions must be provable in the Decision Passport.
+  mgm_lv:
+  - code: MGM-OT-001
+    source_status: primary_verified
+    rule: Nevada daily and weekly overtime is based on resolved role-segmented hours.
+  - code: MGM-TIP-001
+    source_status: primary_verified
+    rule: Tip ownership and no-tip-credit controls remain protected.
+  - code: MGM-DOWNTIME-001
+    source_status: primary_verified
+    rule: Manual capture mode cannot suppress earned time.
+  - code: MGM-MULTIROLE-001
+    source_status: primary_verified
+    rule: Multi-role physical shifts publish as segmented labor context before payroll.
+  schneider:
+  - code: SCH-QUAL-001
+    source_status: primary_verified
+    rule: Hazardous-energy work requires current qualification and authorization.
+  - code: SCH-QUAL-002
+    source_status: primary_verified
+    rule: Electric-power assignments require qualified personnel and clearance constraints.
+  - code: SCH-GRAPH-001
+    source_status: primary_verified
+    rule: Qualification edges are effective-dated and revocation-aware.
+  - code: SCH-PRIV-001
+    source_status: primary_verified
+    rule: Non-U.S. biometric use requires lawful basis, alternative path, DPIA, and minimization.
+  pepsico:
+  - code: PEP-BIO-001
+    source_status: primary_verified
+    rule: Biometric template creation requires appropriate notice, lawful basis, and retention policy.
+  - code: PEP-BIO-002
+    source_status: primary_verified
+    rule: An alternative non-biometric path is mandatory where required.
+  - code: PEP-BIO-003
+    source_status: primary_verified
+    rule: Raw facial images are not persisted in operational stores.
+  - code: PEP-PAY-001
+    source_status: primary_verified
+    rule: Recognition uncertainty creates provisional presence rather than lost time.
+  - code: PEP-HOS-001
+    source_status: primary_verified
+    rule: DOT-governed worker streams execute HOS checks before dispatch-linked publication.
